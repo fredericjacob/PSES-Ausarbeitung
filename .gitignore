@@ -1,0 +1,24 @@
+## LaTeX ignores
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+
+*.synctex.gz
+
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+## other ignores in this folder
+/*.pdf
