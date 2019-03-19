@@ -1,26 +1,30 @@
 \section{Modellbildung und Regelung}
 \label{sec:modelCtrl}
-Im ersten Teil \ref{sec:model} dieses Kapitels wird das Fahrzeug modelliert. Dazu wird das Fahrzeug zunächst nach dem Einspurmodell von Ackermann \textbf{QUELLE} modelliert. Anschließend werden die Umsetzung der Stellgrößen des Fahrzeugs in Geschwindigkeit und Lenkwinkel bestimmt. Im zweiten Teil \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt werden kann, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
-\subsection{Modellierung}
-\subsection*{Ackermann Einspurmodell}\label{sec:model}
-Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \textbf{QUELLE} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells einen Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
-
-\begin{figure}[h!]
-\centering
-\includegraphics[width = 0.8\textwidth]{images/ackermann.png}
-\caption{Ackermann Einspurmodell \textbf{QUELLE}}
-\end{figure}	
 	
-\subsection*{Bestimmung der Lenkwinkelübersetzung}
-Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen.
+Im ersten Abschnitt \ref{sec:model} dieses Kapitels wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \textbf{QUELLE} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. Im zweiten Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt werden kann, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
+\subsection{Modellierung}
+In diesem Abschnitt wird zunächst das Einspurmodell gezeigt und die dafür nötigen Abmessungen des Fahrzeugs genannt. Anschließend ist in den Abbildungen \ref{fig:lenkgroesse} der Verlauf der Lenkstellgröße über den Lenkwinkel zu sehen und in Abb. \ref{fig:veloStell} der Verlauf der Geschwindigkeit bezogen auf die Geschwindigkeitstellgröße.
+\subsubsection{Ackermann Einspurmodell}\label{sec:model}
+Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \textbf{QUELLE} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells einen Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
+	
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.7\textwidth]{images/ackermann.png}
+\caption{Ackermann Einspurmodell \textbf{QUELLE}}
+\label{fig:ackermann}
+\end{figure}
+	
+\subsubsection{Bestimmung der Lenkwinkelübersetzung}\label{sec:lenk}
+Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen. Das Vorgehen hat sich im Projektseminar im vorrausgehenden Jahr bewährt.
+%[$https://moodle.tu-darmstadt.de/pluginfile.php/799141/mod_page/content/14/AusarbeitungDontCodeAndDrive.pdf$].
 
 \begin{itemize}
 \item Das Fahrzeug wurde auf seinem Chassi aufgebockt und ein Rad über einem Winkelmesser zentriert.
-\item Eine Geschwindigkeit von mindestens 300 (entspricht $~0.5m/s$) wurde eingestellt.
+\item Eine Geschwindigkeit von mindestens $300 \simeq 0.6\frac{m}{s}$ wurde eingestellt.
 \item Die Lenkvorgabe wurde eingestellt und der Lenkwinkel abgelesen.
 \end{itemize}
 
-Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von \textit{Matlab} ein sechsten Grades Polynom approximiert:
+Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von Matlab ein sechsten Grades Polynom approximiert. Dabei ist zu beachten, dass die Koeffizieten $a_6$ und $a_5$ sehr klein sind:
 
 \begin{align}
 \begin{split}
@@ -29,15 +33,35 @@ U(\delta) =&5.726\cdot10^{-6}x^6-35.275\cdot10^{-6}x^5 -0.0044x^4\\
 &+0.0126x^3+0.6745x^2-43.3355x+59.346
 \end{split}
 \end{align}
-
-Es ist zu beachten, dass die beiden höchsten Koeffizienten $a_6$ und $a_5$ des Polynoms in Gleichung \ref{eq:stell(lenkw)} sehr klein sind.
 	
-\begin{figure}[h!]
+\begin{figure}[h]
 \centering
-\input{images/stellgroessen.tex}
+\input{images/steer.tex}
 \caption{Lenkwinkel Stellgrößenbestimmung}
 \label{fig:lenkgroesse} 
 \end{figure}
+
+Auffällig ist, dass das Polynom nicht exakt durch $0$ verläuft. Dies ist auch im folgenden Geschwindigkeitstest in Abschnitt \ref{sec:geschw} aufgefallen. Die Lenkstellgröße musste auf $\simeq-70$ festgesetzt werden, um über eine längere Strecke exakt gerade aus zu fahren. Dies kann allerdings auch daran gelegen haben, dass das linke vordere Rad geschliffen hat und das Allradbetriebene Fahrzeug somit nach rechts gezogen hat. Der Antrieb des linken vorderen Rads ist später ganz ausgefallen.
 	
+Eine exaktere Methode wäre, wenn mit verschiedenen konstanten Geschwindigkeiten und Lenkwinkeln Kreise mit festen Radien abzufahren und mit Hilfe des Gyroskops und des Ackermann-Einspur-Modells die entsprechenden Lenkwinkel zu bestimmen. Dazu wäre eine Implementierung einer Odometrie nötig, welche den zurückgelegten Weg und die entsprechende Pose aufzeichnet.
+
+
+\subsubsection{Bestimmung der Geschwindigkeitsübersetzung}\label{sec:geschw}
+
+Wie in Abschnitt \ref{sec:lenk} bereits genannt wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen die Geschwindigkeit in $\frac{m}{s}$ bestimmt. Dazu wurde die Zeit gemessen, die das Fahrzeug mit einer Stellgröße benötigt, um eine bekannte Strecke zurückzulegen. 
+
+\begin{figure}[h]
+\centering
+\input{images/vel.tex}
+\caption{Geschwindigkeit Stellgrößenbestimmung}
+\label{fig:veloStell} 
+\end{figure}
+
+Der Verlauf ist ebenso, wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht exakt klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat. Eine exaktere Methode hätte wiederum eine Odometrie verlangt, oder das die 'Wheelticks' der Hallsonde über einen Zeitraum gemessen worden wären.
+\begin{align}\label{eq:vel}
+v = \frac{num_{wheelticks }\cdot2\pi r_{wheel}}{t}
+\end{align}
+
+
 \subsection{Trajektorienberechnung}\label{sec:traj}
 \subsection{Regelung}\label{sec:ctrl}

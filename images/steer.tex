@@ -1,0 +1,98 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=4.521in,
+height=3.0in,
+at={(0.758in,0.481in)},
+scale only axis,
+xmin=-25,
+xmax=25,
+xlabel style={font=\color{white!15!black}},
+xlabel={Lenkwinkel in Grad °},
+ymin=-1000,
+ymax=1500,
+ylabel style={font=\color{white!15!black}},
+ylabel={Lenkstellgroesse},
+axis background/.style={fill=white},
+axis x line*=bottom,
+axis y line*=left,
+xmajorgrids,
+ymajorgrids,
+legend style={legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [color=blue, draw=none, mark=*, mark options={solid, blue},mark size=1pt]
+  table[row sep=crcr]{%
+22	-1000\\
+21	-925\\
+19	-850\\
+18	-775\\
+17	-700\\
+16	-625\\
+15	-550\\
+13	-475\\
+11	-400\\
+9.5	-325\\
+8	-250\\
+6	-175\\
+4	-100\\
+3	-50\\
+2	-25\\
+1	-10\\
+0	70\\
+-1	100\\
+-2.5	175\\
+-4	250\\
+-6	325\\
+-7.5	400\\
+-9	475\\
+-10.5	550\\
+-13.5	625\\
+-15.5	700\\
+-17.5	775\\
+-20	850\\
+-20.5	925\\
+-22	1000\\
+};
+\addlegendentry{Messung}
+
+\addplot [color=green, solid, line width=1pt]
+  table[row sep=crcr]{%
+22	-995.475372508469\\
+21	-944.206082620243\\
+19	-824.782182082833\\
+17	-699.435434651644\\
+16	-638.662426049299\\
+15	-580.434125640064\\
+13	-473.309757857971\\
+11	-378.83248310006\\
+9.5	-314.975134330865\\
+8	-255.370941700404\\
+4	-103.534743889814\\
+3	-64.6099058087682\\
+2	-24.5971862536803\\
+1	16.693191571643\\
+0	59.3459841555404\\
+-1	103.33897644747\\
+-2.5	171.536302275685\\
+-4	241.606891309475\\
+-6	335.761337764135\\
+-7.5	404.930495332449\\
+-9	471.093087895453\\
+-10.5	532.881256459638\\
+-13.5	640.760148706949\\
+-15.5	703.394004859994\\
+-17.5	766.823844751602\\
+-20	871.060107107013\\
+-20.5	898.97885610975\\
+-22	1006.28525865248\\
+};
+\addlegendentry{Modell}
+
+\end{axis}
+\end{tikzpicture}%
