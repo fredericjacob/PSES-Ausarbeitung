@@ -1,1 +1,30 @@
-\section{Bildverarbeitung}\label{sec:linien}	
+\section{Bildverarbeitung}\label{sec:linien}
+
+Als haupts\"achliche Quelle f\"ur die Erfassung und Verarbeitung der Umwelt des Fahrzeugs haben wir das Bild
+einer Webcam verwendet. Eine Kinect-Kamera mit Tiefenbild war zwar bereits auf dem Fahrzeug vorinstalliert,
+jedoch beschlossen wir aus folgenden Gr\"unden, eine eigene Kamera zu verwenden:
+\begin{itemize}
+	\item Der flache Blickwinkel der Kinect erlaubte es nicht, den Boden unmittelbar vor dem Fahrzeug
+	zu sehen. Die von uns verwendete Webcam dagegen konnte frei angebracht und der Blickwinkel
+	(insbesondere dessen Steilheit) nach Belieben variiert werden.
+	\item Die OpenCV-Bibliothek bot uns die M\"oglichkeit, den Webcam-Stream direkt einzulesen und
+	daran Voreinstellungen vorzunehmen. Bei der Kinect w\"are hingegen eine Vorkonvertierung n\"otig
+	geworden.
+	\item F\"ur die von uns zu realisierenden Aufgaben (Fahrbahn- und Schildererkennung) war die
+	zus\"atzliche Tiefenbild-Funktionalit\"at der Kinect wenig bis nicht relevant.
+\end{itemize}
+\textbf{TODO}\\
+-
+
+\subsection{Kalibrierung der Kamera}
+
+- Beschreibung der ausgemessenen Dimensionen\\
+
+\subsubsection{Umrechnung von Koordinaten}
+
+- wie werden Ma\ss e f\"ur die Umrechnung verwendet?
+
+\subsection{Einlesen des Kamera-Bilds}
+
+- Kamera-Aufnahme-Setup \"uber OpenCV (und rqt\_reconfigure)\\
+- Beschreibung der Node / des Wrappers\\
