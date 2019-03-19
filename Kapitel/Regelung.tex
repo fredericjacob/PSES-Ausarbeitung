@@ -1,1 +1,43 @@
-\section{Regelung}
+\section{Modellbildung und Regelung}
+\label{sec:modelCtrl}
+Im ersten Teil \ref{sec:model} dieses Kapitels wird das Fahrzeug modelliert. Dazu wird das Fahrzeug zunächst nach dem Einspurmodell von Ackermann \textbf{QUELLE} modelliert. Anschließend werden die Umsetzung der Stellgrößen des Fahrzeugs in Geschwindigkeit und Lenkwinkel bestimmt. Im zweiten Teil \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt werden kann, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
+\subsection{Modellierung}
+\subsection*{Ackermann Einspurmodell}\label{sec:model}
+Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \textbf{QUELLE} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells einen Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.8\textwidth]{../images/ackermann.png}
+\caption{Ackermann Einspurmodell \textbf{QUELLE}}
+\end{figure}	
+	
+\subsection*{Bestimmung der Lenkwinkelübersetzung}
+Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen.
+
+\begin{itemize}
+\item Das Fahrzeug wurde auf seinem Chassi aufgebockt und ein Rad über einem Winkelmesser zentriert.
+\item Eine Geschwindigkeit von mindestens 300 (entspricht $~0.5m/s$) wurde eingestellt.
+\item Die Lenkvorgabe wurde eingestellt und der Lenkwinkel abgelesen.
+\end{itemize}
+
+Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von \MATLAB ein sechsten Grades Polynom approximiert:
+
+\begin{align}
+\begin{split}
+\label{eq:stell(lenkw)}
+U(\delta) =&5.726\cdot10^{-6}x^6-35.275\cdot10^{-6}x^5 -0.0044x^4\\ 
+&+0.0126x^3+0.6745x^2-43.3355x+59.346
+\end{split}
+\end{align}
+
+Es ist zu beachten, dass die beiden höchsten Koeffizienten $a_6$ und $a_5$ des Polynoms in Gleichung \ref{eq:stell(lenkw)} sehr klein sind.
+	
+\begin{figure}[h]
+\centering
+\input{../images/stellgroessen.tex}
+\caption{Lenkwinkel Stellgrößenbestimmung}
+\label{fig:lenkgroesse} 
+\end{figure}
+	
+\subsection{Trajektorienberechnung}\label{sec:traj}
+\subsection{Regelung}\label{sec:ctrl}

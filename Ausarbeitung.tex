@@ -1,6 +1,6 @@
 \documentclass[12pt,
 article,
-type=bsc, %sta, diplom, bsc, pp, msc, dr, drfinal, sem, prosem
+type=sta, %sta, diplom, bsc, pp, msc, dr, drfinal, sem, prosem
 colorbacktitle,
 instlogo,
 accentcolor=tud1c,
@@ -19,6 +19,15 @@ twoside
 
 %listings
 \usepackage{listings}
+
+% needed packages for ctrl
+\usepackage{tikz}
+\usepackage{pgfplots} 
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\pgfplotsset{compat=newest} 
+\pgfplotsset{plot coordinates/math parser=false}
+\usepackage{amsmath}
 
 \newcommand{\getmydate}{%
 \iflanguage{ngerman}{%
@@ -66,7 +75,11 @@ twoside
   
   \dateofsubmit{\today}
   \makethesistitle
-  %\affidavit{J. Walker}
+  %\affidavit{Daniel Otterbach}
+  %\affidavit{Daniel Pech}
+  %\affidavit{Frederic Jacob}
+  %\affidavit{Jens Balze}
+  %\affidavit{Nils Hamacher}
 	
 
 
@@ -79,6 +92,7 @@ twoside
 	\listoftables
 	\cleardoublepage
 	
+	\newcommand{\MATLAB}{\textsc{Matlab}\xspace}
 	\pagenumbering{arabic}
 	\input{Kapitel/Einleitung}
 	\input{Kapitel/Bildverarbeitung}
