@@ -1,16 +1,17 @@
+	
 \section{Modellbildung und Regelung}
 \label{sec:modelCtrl}
 	
-Im ersten Abschnitt \ref{sec:model} dieses Kapitels wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \textbf{QUELLE} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. Im zweiten Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt werden kann, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
+Im ersten Abschnitt \ref{sec:model} dieses Kapitels wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. Im zweiten Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt werden kann, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
 \subsection{Modellierung}
 In diesem Abschnitt wird zunächst das Einspurmodell gezeigt und die dafür nötigen Abmessungen des Fahrzeugs genannt. Anschließend ist in den Abbildungen \ref{fig:lenkgroesse} der Verlauf der Lenkstellgröße über den Lenkwinkel zu sehen und in Abb. \ref{fig:veloStell} der Verlauf der Geschwindigkeit bezogen auf die Geschwindigkeitstellgröße.
 \subsubsection{Ackermann Einspurmodell}\label{sec:model}
-Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \textbf{QUELLE} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells einen Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
+Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells einen Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
 	
 \begin{figure}[h]
 \centering
 \includegraphics[width = 0.7\textwidth]{images/ackermann.png}
-\caption{Ackermann Einspurmodell \textbf{QUELLE}}
+\caption{Ackermann Einspurmodell \cite{ackermann}}
 \label{fig:ackermann}
 \end{figure}
 	
@@ -24,7 +25,7 @@ Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurd
 \item Die Lenkvorgabe wurde eingestellt und der Lenkwinkel abgelesen.
 \end{itemize}
 
-Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von Matlab ein sechsten Grades Polynom approximiert. Dabei ist zu beachten, dass die Koeffizieten $a_6$ und $a_5$ sehr klein sind:
+Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von Matlab ein sechsten Grades Polynom (Gl.~\ref{eq:stell(lenkw)}) approximiert. Dabei ist zu beachten, dass die Koeffizieten $a_6$ und $a_5$ sehr klein sind:
 
 \begin{align}
 \begin{split}
@@ -48,7 +49,7 @@ Eine exaktere Methode wäre, wenn mit verschiedenen konstanten Geschwindigkeiten 
 
 \subsubsection{Bestimmung der Geschwindigkeitsübersetzung}\label{sec:geschw}
 
-Wie in Abschnitt \ref{sec:lenk} bereits genannt wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen die Geschwindigkeit in $\frac{m}{s}$ bestimmt. Dazu wurde die Zeit gemessen, die das Fahrzeug mit einer Stellgröße benötigt, um eine bekannte Strecke zurückzulegen. 
+Wie in Abschnitt \ref{sec:lenk} bereits genannt wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen die Geschwindigkeit in $\frac{m}{s}$ bestimmt. Dazu wurde die Zeit gemessen, die das Fahrzeug mit einer Stellgröße benötigt, um eine bekannte Strecke zurückzulegen. Es wurde im Gegensatz zur Lenkwinkelübersetzungsfunktion nicht ein sondern zwei Polynome bestimmt. Wie zu erkennen ist genügt je ein Polynom ersten Grades für vorwärts und rückwärts fahren.
 
 \begin{figure}[h]
 \centering
@@ -57,11 +58,52 @@ Wie in Abschnitt \ref{sec:lenk} bereits genannt wurde ebenfalls eine Funktion be
 \label{fig:veloStell} 
 \end{figure}
 
-Der Verlauf ist ebenso, wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht exakt klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat. Eine exaktere Methode hätte wiederum eine Odometrie verlangt, oder das die 'Wheelticks' der Hallsonde über einen Zeitraum gemessen worden wären.
+Der Verlauf ist ebenso, wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht exakt klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat. Eine exaktere Methode hätte wiederum eine Odometrie verlangt, oder das die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen Zeitraum gemessen worden wären.
 \begin{align}\label{eq:vel}
 v = \frac{num_{wheelticks }\cdot2\pi r_{wheel}}{t}
 \end{align}
 
 
 \subsection{Trajektorienberechnung}\label{sec:traj}
+
+In diesem Abschnitt wird beschrieben, wie aus den erkannten Fahrbahnmarkierungen aus \ref{sec:linien} eine Referenztrajektorie geplant wird. Benötigt wird mindestens eine Punkteschaar im Fahrzeug- oder Weltkoordinatensystem einer Fahrbahnmarkierung. Aus dieser kann mit Hilfe einer Verschiebung der Punkte eine Trajekorie berechnet werden. Sind Linien mehrerer Markierungen vorhanden ist es außerdem möglich eine Mittelung vorzunehmen.
+
+\begin{figure}[h]
+\centering
+\input{images/traj.tex}
+\caption{Trajektorienbestimmung}
+\label{fig:veloStell} 
+\end{figure}
+
+Um die Trajektorie zu bestimmen wurden die verfügbaren Ränder mit Hilfe der alglib \cite{alglib} interpoliert. Zunächst wird eine Linie in Abhängigkeit der Bogenlänge $s$ (Gl.~\ref{eq:s}) parametrisiert. Sodass zu jeder Stützstelle $i$ der linear akkumulierte Weg $s_i$ zwischen den Stützstellen bekannt ist:
+
+\begin{align}\label{eq:s}
+s_i = \sum\limits_{i=1}^{n} \sqrt{(x_i-x_{i-1})^2+(y_i-y_{i-1})^2} \text{ mit: } s_0 = 0
+\end{align}
+
+Daraufhin werden die Linien durch zwei kubische Splines $x(s)$ und $y(s)$ interpoliert. Somit erhält man die Möglichkeit zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren. Die Splines sind eine Schaar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, doppelt stetig differenzierbar.
+
+\begin{align}
+\begin{split} \label{eq:xs}
+x(s) = a_i s^3+b_i s^2+c_i s+d_i
+\end{split}\\
+\begin{split} \label{eq:ys}
+y(s) = a_i s^3+b_i s^2+c_i s+d_i
+\end{split}
+\end{align}
+
+Es ist notwendig die Punkteschaar zu parametrisieren, um die Eindeutigkeit  zu gewährleisten. Die Splines erlauben es in jedem Punkt die Steigung (Gl.~\ref{eq:steigung}) und Krümmung (Gl.~\ref{eq:curv}) der Kurve zu berechnen.
+\begin{align}
+\label{eq:steigung}
+\dot{f}(x,y) = atan2\left(\frac{\dot{y}}{\dot{x}}\right)
+\end{align}
+\begin{align}
+\label{eq:curv}
+\kappa = \frac{\ddot{x}\dot{y}-\ddot{y}\dot{x}}{\sqrt[3]{\dot{x}^2+\dot{y}^2}}
+\end{align}
+
 \subsection{Regelung}\label{sec:ctrl}
+In diesem Kapitel werden zwei verschiedene Regelkonzepte aufbauend auf die Referenztrajektorie aus Abschnitt~\ref{sec:traj}, die im Laufe des Projektseminars implementiert und getestet wurden, gezeigt. Zunächst wird gezeigt, wie mit Hilfe eines PID-Reglers ein Fehler ausgeregelt wird. Dieser kann aufgrund der Modellierung der Lenkwinkelübersetzung aus Abschnitt \ref{sec:lenk} ebenfalls den aktuellen Lenkwinkel korrigieren. Dazu muss die Ausgabe des Reglers legiglich dem Polynom (Gl.~\ref{eq:stell(lenkw)}) übergeben werden. Andererseits kann der laterale Fehler in $cm$ genutzt werden, um das Stellsignal direkt zu steuern. Weiterhin wird im zweiten Abschnitt dieses Teils eine Regelung gezeigt, die aus der Krümmung (Gl.~\ref{eq:curv}) der Trajektorie direkt den nötigen Lenkwinkel des Fahrzeugs berechnet, um die Trajektorie abzufahren. Dazu wird das Ackermann-Einspur-Modell aus Abschnitt \ref{sec:model} benutzt.
+	
+\subsubsection{PID-Regler}\label{sec:pid}
+\subsubsection{Lenkwinkelbestimmung durch die Trajektorie}\label{sec:curv2lenk}

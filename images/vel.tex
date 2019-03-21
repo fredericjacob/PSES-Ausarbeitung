@@ -24,7 +24,7 @@ axis x line*=bottom,
 axis y line*=left,
 xmajorgrids,
 ymajorgrids,
-legend style={legend cell align=left, align=left, draw=white!15!black}
+legend style={legend cell align=left, align=left, draw=white!15!black, at={(axis cs:-550,1.8)},anchor=north west}
 ]
 
 \addplot [color=blue, draw=none, mark=*, mark options={solid, blue}, mark size = 1pt]
@@ -33,6 +33,8 @@ legend style={legend cell align=left, align=left, draw=white!15!black}
 -400	-0.819999999999993\\
 -300	-0.600000000000023\\
 -200	-0.240000000000009\\
+-170	-0.099999999999994\\
+170	0.100000000000002\\
 200	0.259999999999991\\
 300	0.600000000000023\\
 400	0.833300000000008\\
@@ -45,12 +47,18 @@ legend style={legend cell align=left, align=left, draw=white!15!black}
   table[row sep=crcr]{%
 -500	-1.005\\
 -200	-0.300000000000011\\
--170	0\\
-170 0	\\
+-170	-0.1\\
+};
+\addplot [color=green, solid, line width= 1pt, forget plot]
+  table[row sep=crcr]{%
+170 0.1	\\
 200	0.294947297297313\\
 700	1.56702162162162\\
 };
 \addlegendentry{Modell}
+
+\draw [dashed] (-170,-1.5) -- (-170,2);
+\draw [dashed] (170,-1.5) -- (170,2);
 
 \end{axis}
 \end{tikzpicture}%

@@ -28,6 +28,9 @@ twoside
 \pgfplotsset{compat=newest} 
 \pgfplotsset{plot coordinates/math parser=false}
 \usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{hyperref}
 
 \newcommand{\getmydate}{%
 \iflanguage{ngerman}{%
@@ -108,8 +111,8 @@ twoside
 	\cleardoublepage
 	\input{Kapitel/Fazit_Ausblick}
   
-	\bibliographystyle{alphadin}
 	\bibliography{literature}
+	\bibliographystyle{alpha}
 	
 	\begin{appendix}
 	\section{Erster Anhang}
