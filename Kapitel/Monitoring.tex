@@ -1,7 +1,26 @@
 \section{Monitoring und Debugging}
 
+%TODO:\\
+%- image\_publisher\\
+%- image\_viewer\\
+%- draw\_grid\_on\_camera\\
+%- rqt\_reconfigure: (Kamera-Setup, Farbwerte, Trajektorienparameter)\\
+
+In diesem Kapitel werden die verschiedenen M\"oglichkeiten vorgestellt, welche von uns f\"ur Monitoring und Debugging Zwecke eingesetzt worden sind. Ein Teil davon war hilfreich bei der Entwicklung einzelner Funktionalit\"aten, ein anderer hat die Fehlersuche im Betrieb wesentlich vereinfacht.
+
+\subsection{Image Publisher und Viewer}
+Mit Ros hat man die M\"oglichkeit einzelne Nodes sehr einfach auszutauschen und somit die Funktionalit\"at schnell anzupassen, solange die Schnittstelle (die Messages) gleich bleiben. Dies haben wir uns f\"ur eine fr\"uhe Phase der Entwicklung zu Nutze gemacht. Im laufenden Betrieb liesst die Bildverarbeitung Bilder aus der Webcam und ver\"offentlicht sie auf dem Topic \textit{/camera/frame}. Dies ben\"otigt aber das Fahrzeug und die Webcam. Also haben wir eine Ros-Node namens \textit{Image Publisher} geschrieben, welche zuvor aufgenommene Bilder lokal und offline wiedergeben kann. Somit sind wir in der Lage unabh\"angig vom Fahrzeug die Bildverarbeitung zu testen und einzustellen.\\
+
+Der umgekehrte Fall ist die Anzeige der Bilder. Im laufendem Betrieb sollen die Aufnahmen der Webcam angezeigt werden k\"onnen. Dazu wird in einer Ros-Node namens \textit{Image Viewer} die Nachricht \textit{/camera/frame} ausgelesen und das darin befindliche Bild angezeigt. Dies wird auch entsprechend verwendet um die erkannten Linien und die geplante Trajektorie in einem seperaten Bild anzuzeigen. 
+
+\subsection{Draw Grid on Camera}
+F\"ur die Transformation der Kamera Pixelkoordinaten in birds-eye-view Koordinaten ist eine genaue Kalibrierung des Systems notwendig. Man ben\"otigt dazu vier genau definierte Pixelkoordinaten und die dazu passenden Koordinaten der realen Welt. Hieraus kann eine Transformationsmatrix erstellt werden. Daf\"ur ist es wichtig, alles genau zu vermessen. Entsprechend haben wir eine hilfreiche Ros-Node geschrieben, welche auf das Kamerabild ein Grid einzeichnet. Somit ist die Positionierung des Fahrzeugs zu den vorher ausgemessenen Punkten einfacher. Ebenfalls kann man mit dieser Node auf Bilder per Tastendruck abspeichern.
+
+\subsection{RQT Reconfigure}
+Da unsere Software auf dem Fahrzeug eine Viehlzahl an einzustellenden Parametern aufweist, haben wir uns f\"ur eine dynamische Rekonfiguration dieser entschieden. Die Ros-Bibliothek bietet hier mit rqt\textunderscore reconfigure einen entsprechenden Dienst an. Nachdem die zu \"andernden Parameter in einer Config-Datei vorkonfiguriert worden sind, muss man in den entsprechenden Nodes noch eine Callback Methode implementieren, welche die ge\"anderten Parameter \"ubernimmt. Somit ist man in der Lage zur Laufzeit Parameter einzustellen. Verwendung findet es bei der Einstellung von Kamera (Kontrast und Farbe), Linienerkennung (Farbschwellwerte) und der Trajektorienplanung (Reglereinstellungen).
+
+\subsection{Netzwerkkommunikation}
+Um die umfangreichen Optionen von Monitoring und Rekonfiguration sinnvoll zu nutzen, ben\"otigt es einer Kommunikation \"uber das Netzwerk. Da hier keine Zeitkritischen Funktionen ausgef\"uhrt werden, l\"auft die Kommunikation in unserem Projekt \"uber das Universit\"atsnetzwerk eduroam. Dazu m\"ussen das Fahrzeug, wie auch die Monitoring-Einheit, sich im Netzwerk befinden. Das Fahrzeug ist in dem Fall der Ros-Master und stellt die Daten bereit. Damit man von ausserhalb auf den Master zugreifen kann, muss man die IP-Adresse des Fahrzeugs wissen. Diese muss auf dem Laptop einerseits in die Datei /etc/hosts eingetragen sein und als ROS\textunderscore MASTER\textunderscore URI:http://IP-Adresse:11311 im Terminal exportiert werden. Danach l\"auft die Kommunikation wie gewohnt \"uber Ros. Damit ist es uns m\"oglich \"uber Netzwerk die Aufnahmen der Webcam an einen Monitoring Laptop zu senden, die erkannten Linien und die geplante Trajektorie anzuzeigen und die Parameter auf dem Fahrzeug dynamisch zu Rekonfigurieren. W\"ahrend unseren Versuchen hat sich eine Latenz zwischen 200 und 600ms ergeben was f\"ur unsere Monitoring und Debugging Zwecke ausreichend ist. \\
+
 TODO:\\
-- image\_publisher\\
-- image\_viewer\\
-- draw\_grid\_on\_camera\\
-- rqt\_reconfigure: (Kamera-Setup, Farbwerte, Trajektorienparameter)\\
+Bild! Hat jemand eventuell schon ein sch"ones oder muss man das neu aufnehmen?
