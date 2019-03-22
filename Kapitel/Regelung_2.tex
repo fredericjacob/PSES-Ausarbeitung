@@ -127,7 +127,7 @@ Dem P-Glied, welches den Fehler linear verstärkt. Einem I-Glied, welches den Feh
 
 \subsubsection{Lenkwinkelbestimmung durch die Trajektorie}\label{sec:curv2lenk}
 
-Die direkte Bestimmung des Lenkwinkels mit Hilfe einer Referenztrajektorie \cite{ackermann} ist eher eine Art der Steuerung als eine Regelung. Diese Methode benötigt eine Trajektorie, wie z.~B. in Abschnitt \ref{sec:traj} beschrieben. Weiterhin wird ein möglichst exaktes Fahrzeugmodell (siehe: \ref{sec:model}). Nun wird ein Punkt auf der Trajektorie gewählt, der sich eignet darauf zu regeln. D.h. die Krümmung wie in Gleichung \ref{eq:curv} wird dort bestimmt. Aus dem Einspurmodell nach Ackermann ergibt sich, dass für eine Kurvenfahrt konstanten Radius der laterale Abstand ($R$ siehe Abb.~\ref{fig:ackermann}) zwischen Hinterachse des Fahrzeugs und dem augenblicklichen Krümmungszentrum (engl. ICC) dem Kehrwert der Krümmung $\kappa$ entspricht. 
+Die direkte Bestimmung des Lenkwinkels mit Hilfe einer Referenztrajektorie \cite{ackermann} ist eher eine Art der Steuerung als eine Regelung. Diese Methode benötigt eine Trajektorie, wie z.~B. in Abschnitt \ref{sec:traj} beschrieben. Weiterhin wird ein möglichst exaktes Fahrzeugmodell (siehe: \ref{sec:model}) benötigt. Nun wird ein Punkt auf der Trajektorie gewählt, der sich eignet darauf zu regeln. An diesem Punkt wird die Krümmung wie in Gleichung \ref{eq:curv} bestimmt. Aus dem Einspurmodell nach Ackermann ergibt sich, dass für eine Kurvenfahrt konstanten Radius der laterale Abstand ($R$ siehe Abb.~\ref{fig:ackermann}) zwischen Hinterachse des Fahrzeugs und dem augenblicklichen Krümmungszentrum (engl. ICC) dem Kehrwert der Krümmung $\kappa$ entspricht. 
 
 \begin{align}
 R = \frac{1}{\kappa}
@@ -135,6 +135,12 @@ R = \frac{1}{\kappa}
 
 Aus diesem Zusammenhang lässt sich nun direkt mit Hilfe der Krümmung der Trajektorie der benötigte Lenkwinkel berechnen:
 
-\begin{align}
+\begin{align}\label{eq:lenkwinkel_complex}
 \delta = \arctan\left(\frac{L_{rear,front}}{\sqrt{\frac{1}{\kappa^2}-L_{rear,CoG}^2}}\right)
+\end{align}
+
+Es ist allerdings auch eine Vereinfachung der Gleichung \ref{eq:lenkwinkel_complex} für sehr große Kurvenradien im Vergleich zu Fahrzeuglänge selbst möglich \cite{acker}:
+
+\begin{align}
+\delta = \arctan \frac{L}{R} = \arctan L \cdot \kappa
 \end{align}
