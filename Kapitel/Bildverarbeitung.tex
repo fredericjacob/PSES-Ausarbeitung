@@ -144,26 +144,50 @@ Reihenfolge) ausgef\"uhrt werden k\"nnen. Insbesondere stellt sie die Funktional
 
 \subsection{Detektion der Fahrbahnlinien}
 
-Die Singleton-Klasse \texttt{LanePointsCalculator} enth\"alt verschiedene Methoden, um mithilfe eines
-\"ubergebenen \texttt{ImageProcessor}-Objekts Linien-Punkte im Bin\"arbild zu ermitteln. Bei der
-Verwendung ist darauf zu achten, dass der \texttt{ImageProcessor} bereits ein fertig verarbeitetes
-Graustufen-Bild enth\"alt.\\
-
 F\"ur die Detektion der Fahrbahnlinien wurde eine abstrakte Oberklasse \texttt{LaneDetector} implementiert,
-welche Methoden zur Ermittlung bzw. R\"uckgabe der einzelnen Linien deklariert.
+welche Methoden zur Ermittlung bzw. R\"uckgabe der einzelnen Linien deklariert und daf\"ur Objekte
+weiterer Klassen verwendet. Die Idee hinter dieser
+abstrakten Klasse war es, durch unterschiedliche Implementierungen Linienpunkte auf verschiedene Weise,
+aber \"uber das gleiche Interface ermitteln zu k\"onnen.\\
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width = 1.0\textwidth]{images/LaneDetectionKlassendiagramm.png}
-	\caption{2D-Bild- vs. Fahrzeugkoordinaten}
+	\caption{Vereinfachtes Klassendiagramm der Klassen zur Liniendetektion}
 	\label{fig:lanedetection}
 \end{figure}
 
-- LanePointsCalculator: Funktionen zur Ermittlung bestimmter Punkte im Bin\"arbild\\
-- LaneDetector: abstrakte Oberklasse für unterschiedliche Ans\"atze zur Erkennung von Fahrbahnmarkierungen\\
-- TransformingLaneDetector: verwendete Klasse, welche die Hauptlogik enth\"alt\\
-- Node lane\_detection: verwendet TransformingLaneDetector, Publishen + Subscriben\\
+Die f\"ur die Liniendetektion relevanten Klassen sind in \figurename\ \ref{fig:lanedetection} vereinfacht
+dargestellt.
 
+Die Singleton-Klasse \texttt{LanePointsCalculator} enth\"alt verschiedene Methoden, um mithilfe eines
+\"ubergebenen \texttt{ImageProcessor}-Objekts Linien-Punkte im Bin\"arbild zu ermitteln. Bei der
+Verwendung ist darauf zu achten, dass der \texttt{ImageProcessor} bereits ein fertig verarbeitetes
+Graustufen-Bild enth\"alt.
 
-\textbf{TODO}\\
-- eigene section für Monitoring-Funktionen + Debugging-Nodes\\
+Konkret implementiert wurden die Methoden aus \texttt{LaneDetector} in der Klasse
+\texttt{TransformingLaneDetector}.\\
+Diese verwendet zun\"achst den \texttt{ImageProcessor}, um das Quellbild in 2D zu transformieren und zwei
+farbgefilterte Bilder (eines mit den gr\"unen und eines mit den pinken Linien) zu erhalten. Im n\"achsten
+Schritt werden die Pixelkoordinaten der Linien mithilfe der Instanz des \texttt{LanePointsCalculator}
+ermittelt und zwischengespeichert. Die endg\"ultigen Punkte der Linien in Pixelkoordinaten ergeben sich
+erst aus einer Filterung der Zwischenergebnisse. Hier werden die Abst\"ande der gr\"unen Linien-Punkte
+von der Mittellinie betrachtet, um sicherzustellen, dass es sich tats\"achlich um einen linken bzw.
+rechten Punkt handelt (und nicht durch ein zwischenzeitlich schlechtes Bild Punkte der jeweils
+gegen\"uberliegenden Linie falsch zugeordnet wurden). Nur Punkte, die rechts bzw. links von der
+Mittellinie liegen, werden auch tats\"achlich als der entsprechenden Au\ss enlinie zugeh\"orig erkannt.
+
+Schlie\ss lich wird das gespeicherte \texttt{CameraCalibration}-Objekt verwendet, um aus den Pixelkoordinaten
+der jeweiligen Linie die entsprechenden Fahrzeugkoordinaten zu berechnen und zur\"uckzugeben.\\
+
+F\"ur den Betrieb der Linienerkennung im Gesamtsystem existiert die ROS-Node \texttt{lane\_detection},
+welche das ROS-Topic \texttt{camera/frame} subscribed und so die einzelnen Frames, die vom
+\texttt{webcam\_publisher} ver\"offentlicht werden, empf\"angt. Zus\"atzlich werden die Farbschwellwerte
+\"uber \texttt{rqt\_reconfigure}\ref{TODO: Link zu rqt_reconfigure} empfangen und gesetzt und zusammen mit
+dem aktuellsten Frame an eine Instanz des \texttt{TransformingLaneDetector} \"ubergeben, welcher die
+eigentlichen Berechnungen vornimmt.
+
+Die ermittelten Punkte der einzelnen Fahrbahnlinien in Fahrzeugkoordinaten werden dann \"uber die Topics
+\texttt{right\_lane}, \texttt{left\_lane} und \texttt{middle\_lane} gepublished, um von der
+Trajektorienberechnung weiterverwendet werden zu k\"onnen. Au\ss erdem wird ein Bin\"arbild des fertig
+verarbeiteten Webcam-Frames zu Monitoring-Zwecken ebenfalls gepublished.
