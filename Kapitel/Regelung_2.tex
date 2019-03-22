@@ -1,4 +1,3 @@
-	
 \section{Modellbildung und Regelung}
 \label{sec:modelCtrl}
 	
@@ -106,4 +105,36 @@ Es ist notwendig die Punkteschaar zu parametrisieren, um die Eindeutigkeit  zu g
 In diesem Kapitel werden zwei verschiedene Regelkonzepte aufbauend auf die Referenztrajektorie aus Abschnitt~\ref{sec:traj}, die im Laufe des Projektseminars implementiert und getestet wurden, gezeigt. Zunächst wird gezeigt, wie mit Hilfe eines PID-Reglers ein Fehler ausgeregelt wird. Dieser kann aufgrund der Modellierung der Lenkwinkelübersetzung aus Abschnitt \ref{sec:lenk} ebenfalls den aktuellen Lenkwinkel korrigieren. Dazu muss die Ausgabe des Reglers legiglich dem Polynom (Gl.~\ref{eq:stell(lenkw)}) übergeben werden. Andererseits kann der laterale Fehler in $cm$ genutzt werden, um das Stellsignal direkt zu steuern. Weiterhin wird im zweiten Abschnitt dieses Teils eine Regelung gezeigt, die aus der Krümmung (Gl.~\ref{eq:curv}) der Trajektorie direkt den nötigen Lenkwinkel des Fahrzeugs berechnet, um die Trajektorie abzufahren. Dazu wird das Ackermann-Einspur-Modell aus Abschnitt \ref{sec:model} benutzt.
 	
 \subsubsection{PID-Regler}\label{sec:pid}
+
+Der PID-Regler (Abb.~\ref{fig:PID-System}) erhält den aktuellen zwischen longitudinaler Achse und der Referenztrajektorie in einem bestimmten Abstand zum Fahrzeug als auszuregelnden Fehler. Dabei besteht der Regler aus drei verschiedenen Elementen. 
+
+\begin{figure}[h]
+\centering
+\input{images/controller.tex}
+\caption{PID-Regler mit System}
+\label{fig:PID-System} 
+\end{figure}
+
+Dem P-Glied, welches den Fehler linear verstärkt. Einem I-Glied, welches den Fehler über die Zeit aufsummiert und somit ein Gedächtnis hat. I-Glieder eignen sich besonders, um bleibende Regelabweichungen zu verhindern. Weiterhin ist ein kleiner D-Anteil benutzt worden, um schnell auf auftretende Fehler reagieren zu können. D-Glieder verstärken die Änderung des Fehlers. Im speziellen wurde der PID-Regler allerdings so angepasst, dass für den Fall, dass der Fehler am Sinken ist das I-Glied schneller abgebaut wird. Der I-Anteil steigt weiterhin an, selbst wenn der Fehler bereits ausgeregelt wird. Der exakte Entwurf ist in Abbildung \ref{fig:PID} zu sehen.
+
+
+\begin{figure}[h]
+\centering\includegraphics[width=\textwidth]{images/PID_modell.PNG} 
+\caption{PID-Regler}
+\label{fig:PID} 
+\end{figure}
+
+
 \subsubsection{Lenkwinkelbestimmung durch die Trajektorie}\label{sec:curv2lenk}
+
+Die direkte Bestimmung des Lenkwinkels mit Hilfe einer Referenztrajektorie \cite{ackermann} ist eher eine Art der Steuerung als eine Regelung. Diese Methode benötigt eine Trajektorie, wie z.~B. in Abschnitt \ref{sec:traj} beschrieben. Weiterhin wird ein möglichst exaktes Fahrzeugmodell (siehe: \ref{sec:model}). Nun wird ein Punkt auf der Trajektorie gewählt, der sich eignet darauf zu regeln. D.h. die Krümmung wie in Gleichung \ref{eq:curv} wird dort bestimmt. Aus dem Einspurmodell nach Ackermann ergibt sich, dass für eine Kurvenfahrt konstanten Radius der laterale Abstand ($R$ siehe Abb.~\ref{fig:ackermann}) zwischen Hinterachse des Fahrzeugs und dem augenblicklichen Krümmungszentrum (engl. ICC) dem Kehrwert der Krümmung $\kappa$ entspricht. 
+
+\begin{align}
+R = \frac{1}{\kappa}
+\end{align}
+
+Aus diesem Zusammenhang lässt sich nun direkt mit Hilfe der Krümmung der Trajektorie der benötigte Lenkwinkel berechnen:
+
+\begin{align}
+\delta = \arctan\left(\frac{L_{rear,front}}{\sqrt{\frac{1}{\kappa^2}-L_{rear,CoG}^2}}\right)
+\end{align}
