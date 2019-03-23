@@ -1,1 +1,122 @@
 \section{Schildererkennung}
+\label{sec:schildererkennung}
+
+Das Fahrzeug soll, "ahnlich wie ein Mensch, die Verkehrsschilder auf dem Rundkurs wahrnehmen k"onnen und diese visuell erkenntlich machen.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/Verkehrszeichen}
+	\caption{Verkehrszeichen}
+	\label{fig:verkehrszeichen}
+\end{figure}
+
+\subsection{Implementierung}
+Um diese Motivation umsetzen zu k"onnen, haben wir ein k"unstliches neuronales Netz gew"ahlt. Dieses ist biologischen Prozessen nachempfunden und wird vermehrt im Bereich des maschinellen Lernen von Bildern verwendet. Das neuronale Netzwerk YOLO (You Only Look Once \cite{darknet13}) ist ein State-of-the-art real-time Objektdetektor basierend auf dem \textbf{Darknet} Netzwerk. Die allgemeine Herausforderung eines Objektdetektors besteht darin, das Objekt im Bild zu detektieren und anschliessend zu klassifizieren. Der Vorteil des YOLO Netzes besteht neben der gleichzeitigen Lokalisierung \& Klassifizierung mehrerer Objekte in einem Bild, dass es auf unerwartete Eingaben sehr adaptiv reagiert und somit f"ur weniger Ausf"alle des Erkennungssystems sorgt. Dies erm"oglicht uns auch mehrere Verkehrsschilder auf einmal in einem Bild zu erkennen wobei das aktuell n"achstgelegene Schild selektiert wird.
+
+Der erste Ansatz ist die aktuelle Version YOLOv3. Es stellt sich jedoch heraus, dass die eingeschr"ankte Hardware auf dem Fahrzeug der limitierende Faktor ist und der ROS Wrapper leider nicht das aktuelle YOLOv3 verwenden kann. Daher wird aus Gr"unden der Performance die YOLOv2 Tiny Version verwendet, welche eine reduzierte Variante des YOLOv2 ist und eine geringere Pr"azision in der Erkennung hat.
+
+\subsection{Aufbau des neuronalen Netzes}
+\label{sec:cnn_aufbau}
+Ein k"unstliches neuronales Netz besteht aus mehreren Neuronen, die "uber mehrere Schichten (Layer) mit einander verbunden sind (siehe Abb \ref{fig:neunet}). YOLO ist ein Single CNN (Convolution Neuronal Network), welches aufgrund seines schlanken Aufbaus eine enorme Schnelligkeit erm"oglicht. Es verarbeitet ein Bild und detektiert dabei mehrere Objekte (Single Shot Detector). Andere Netze ben"otigen f"ur diese vergleichbare Detektion mehrere Durchl"aufe - jeweils einen Durchlauf f"ur das Detektieren der Objekte und jeweils eine Iteration pro gefundenes Objekt zur Klassifikation (z.B. R-CNN, R-FCN).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.90\textwidth]{images/aufbauskizze}
+	\caption{Aufbauskizze \cite{CNN}}
+	\label{fig:neunet}
+\end{figure}
+
+Das YOLO CNN besteht aus mehreren Convolution und Maxpool Layers zum subsampling. Diese reduzieren die Dimension der Eingabedarstellung mit Hilfe von Annahmen, so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $16*16*14$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen:
+
+Das 16 x 16 Grid beschreibt die Gr"osse eines Rasters in das das Bild unterteilt wird. Die Tiefe 14 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox sowie dessen H"ohe und Breite (x,y).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Mass wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen werden der Tiefe noch hinzuaddiert, sodass der Quader nachfolgende Gr"osse besitzt:
+	
+\begin{equation}
+\begin{bmatrix}16 * 16 (Grid)\end{bmatrix} * \begin{bmatrix}2 * 5 + 4 (Objektklassen)\end{bmatrix}
+\end{equation}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.65\textwidth]{images/stoppschild}
+	\caption{Erkanntes Stoppschild mit Boundingboxes \cite{STP}}
+	\label{fig:stoppschild}
+\end{figure}
+
+\subsection{Ablauf der Detektion}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth,trim={1.2cm 1cm 1cm 6.3cm},clip]{images/yolo_schaubild}
+	\caption{Ablaufprozess des neuronalen Netzes YOLO}
+	\label{fig:yolo}
+\end{figure}
+
+Die einzelnen Frames der Webcam werden dem neuronalen Netz als Input zur Verf"ugung gestellt. Somit verwendet das YOLO Netz ein vollst"andiges Bild zur Erkennung, dass es uns erm"oglicht weniger Hintergrundfehler zu erhalten und der Kontext der Objekte wird mitbetrachtet. Das gesamte Bild wird in einzelne Grids aufgeteilt und dem CNN "ubergeben. Pro Grid kann ein Objekt erkannt werden. Damit man auch mehrere Objekte detektieren kann die eventuell weiter entfernt sind, verwenden wir abweichend vom Standard Grid (32 x 32) eine Gr"osse von 16 x 16 Pixel. Der komplexe Prozess des CNN l"asst sich vereinfacht durch diesen Ablauf beschreiben:
+
+\begin{enumerate}
+	\item Bildinput wird auf Eingangsgr"osse des Netzes angepasst (416 x 416 Pixel)
+	\item Durchlaufen des Convolutional Network
+	\item Non-max Suppression (Pro Objektregion wird das Objekt nur einmal erkannt, reduziert Redundanzen) 
+\end{enumerate}
+
+Das detektierte Objekt mit der h"ochsten "Ubereinstimmung (> 60\%) mit unseren Objektklassen wird gekennzeichnet durch eine bunte Boundingbox inklusive entsprechendem Label im Bild versehen.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth,trim={0.5cm 1cm 1cm 1cm},clip]{images/boundingboxes}
+	\caption{Erkannte und markierte Schilder auf dem Rundkurs}
+	\label{fig:boundingboxes}
+\end{figure}
+
+Anschliessend wird das Ergebnis der Verkehrsschildererkennung "uber das ROS Netzwerk gepusht. Um das YOLO Netz auf dem Fahrzeug auszuf"uhren verwenden wir ein angepasstes Interface von leggedrobotics \cite{leggedrobotics}. Es l"adt die Bilder der ROS Node \textbf{Webcam Publisher} ein und startet die Verkehrsschildererkennung mit dem selbsttrainierten Netzwerk "uber ROS. "Uber das ROS Netzwerk k"onnen nun die Anzahl der erkannten Objekte (Topic: object\_detector), die Position dieser (Topic: bounding\_boxes, ein Array mit Boundingboxen in Pixelkoordinaten) und das resultierende Bild mit den erkannten Detektionen (Topic: detection\_image) abgefragt werden.
+
+\subsection{Training}
+
+Das Neuronale Netz wurde bereits mit dem VOC Datensatz per Transfer Learning (Die Ergebnisse eines fertig trainierten Netzes werden auf ein neues Netz "ubertragen. Die Layer /Neuronen des Netzes werden nun mit dem neuen Datenset trainiert.) vorverarbeitet. Dies erm"oglicht uns ein vortrainiertes Netz zu verwenden, welches bereits f"ur die Objekterkennung konfiguriert ist und durch unseren Datensatz optimiert wird. Wir trainieren das Netz mit dem Supervised-Learning-Verfahren (ein "uberwachtes Lernen, bei dem die Ergebnisse des Lernprozesses Verglichen werden mit den Referenzergebnissen).  Daf"ur wird der Datensatz in Trainings- und Testdaten aufgeteilt. Unser Datensatz besteht aus 1700 selbstaufgenommenen Verkehrsschildern "uber die Webcam des Autos, ca. 400 Bilder pro Objektklasse (STOP, Fussg"anger, 40, 70), die mit einem Softwaretool gelabelt wurden.
+
+Der Trainingsdatensatz wird als Input f"ur das Netz verwendet. Diese passieren das Netz "uber die Neuronen durch die verschiedenen Layer zum Output Quader (Forward Pass). Das Ergebnis der Berechnung wird der mit dem bekannten Ergebnis des Testdatensatzes verglichen und der Fehler/Abweichung berechnet. Dieser Fehler wird durch das Netzwerk r"uckw"arts propagiert (Backward Pass) und jedes Neuron entsprechend angepasst im Verh"altnis zur Learning Rate (0,001). Somit wird das Netz nur minimal ver"andert um ein Overshooting (zu grosse Ver"anderungen, z.B. bei einer Fehlfunktion) zu verhindern. Dieser Ablauf beschreibt eine Trainings-Epoche des Netzes.  Solche eine Epoche wird zum Trainieren mehrere 1000 Mal ausgef"uhrt um ein zufriedenstellendes Ergebnis des Trainings zu erhalten. Darauf wird in dem Abschnitt Validierung des Netzes eingegangen. Das verwendete Darknet YOLO Datenset besteht aus nachfolgenden Elementen:
+
+\begin{itemize}
+	\item .cfg enth"alt die Strukturdefinition des neuronalen Netzes (Layers, Gr"osse des Inputs, Gridgr"osse, Learningrate, ...)
+	\item .weights Datei enth"alt die erlernten Gewichte
+	\item .yaml Referenzfile zu den Weights und Config, inklusive Erkennungsrate (Threshold)
+	\item .data Referenzfile zu Trainingsdaten \& Beschriftung
+\end{itemize}
+
+"uber das ROS Netzwerk k"onnen nun die Anzahl der erkannten Objekte (Topic: object\_detector), die Position dieser (Topic: bounding\_boxes, ein Array mit Boundingboxen in Pixelkoordinaten) und das resultierende Bild mit den erkannten Detektionen (Topic: detection\_image) abgefragt werden.
+
+\subsection{Validierung}
+Die G"ute/Genauigkeit der richtigen Detektion eines Objektes wird durch folgende Werte bestimmt:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/genauigkeit}
+	\caption{G"utebestimmung}
+	\label{fig:genauigkeit}
+\end{figure}
+
+Die Detektionsfl"ache wird mit der tats"achlichen Fl"ache eines Objektes vergleichen und der Grad der "ubereinstimmung bestimmt. W"ahrend des Trainings kann man in Abb. \ref{fig:training} erkennen, dass neben dem rapide absinkenden Fehler (Loss) in blau, der mAP-Wert (mean average precision) in rot, mit Laufe der Iterationen stetig steigt und sich der 100\% Linie ann"ahert (Convergence). Ab ca. 93\% schwankt der Wert immer mehr und n"ahert sich dem Wert 1 an. Dieser Bereich unterscheidet sich signifikant vom restlichen Graphen und deutet auf Overfitting hin.
+
+Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt des Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 70 zu 30.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/training}
+	\caption{Trainingsverlauf}
+	\label{fig:training}
+\end{figure}
+
+Nach dem Training k"onnen wir die jeweiligen Objektklassen (STOP, Fussg"anger, 40, 70) mit einer Wahrscheinlichkeit von 90\% bzw. bei dem Schild 70 mit 77\% richtig erkennen. Der IoU (siehe Abschnitt \ref{sec:cnn_aufbau}) Wert liegt bei 63\% und der mAP bei 87\%. (Siehe Abb. \ref{fig:ergebnis}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/ergebnis}
+	\caption{Ergebnisse des Trainings}
+	\label{fig:ergebnis}
+\end{figure}
+
+\subsection{Ausblick}
+Im Laufe der Zeit wird der ROS-Wrapper in der Lage sein mit der aktuellen Yolov3 Version interagieren zu k"onnen, sodass wir eine noch schnellere, pr"azisere und ressourcenschonendere Verkehrsschilderkennung verwenden k"onnen.
+
+Die Genauigkeit der Schildererkennung kann durch den Datensatz von 1000 gelabelten Bildern pro Klasse verbessert werden.
+
+Die allgemeine Leistungssteigerung der Fahrzeughardware w"urde die Erkennung von vielen weiteren digitalen bzw. dynamischen Schildern erm"oglichen, sodass das Fahrzeug auch in Baustellsituationen entsprechend reagieren kann.
