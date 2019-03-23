@@ -22,7 +22,7 @@ Ein k"unstliches neuronales Netz besteht aus mehreren Neuronen, die "uber mehrer
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.90\textwidth]{images/aufbauskizze}
-	\caption{Aufbauskizze \cite{CNN}}
+	\caption{Aufbauskizze}
 	\label{fig:neunet}
 \end{figure}
 
@@ -37,7 +37,7 @@ Das 16 x 16 Grid beschreibt die Gr"osse eines Rasters in das das Bild unterteilt
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.65\textwidth]{images/stoppschild}
-	\caption{Erkanntes Stoppschild mit Boundingboxes \cite{STP}}
+	\caption{Erkanntes Stoppschild mit Boundingboxes}
 	\label{fig:stoppschild}
 \end{figure}
 
@@ -71,7 +71,7 @@ Anschliessend wird das Ergebnis der Verkehrsschildererkennung "uber das ROS Netz
 
 \subsection{Training}
 
-Das Neuronale Netz wurde bereits mit dem VOC Datensatz per Transfer Learning (Die Ergebnisse eines fertig trainierten Netzes werden auf ein neues Netz "ubertragen. Die Layer /Neuronen des Netzes werden nun mit dem neuen Datenset trainiert.) vorverarbeitet. Dies erm"oglicht uns ein vortrainiertes Netz zu verwenden, welches bereits f"ur die Objekterkennung konfiguriert ist und durch unseren Datensatz optimiert wird. Wir trainieren das Netz mit dem Supervised-Learning-Verfahren (ein "uberwachtes Lernen, bei dem die Ergebnisse des Lernprozesses Verglichen werden mit den Referenzergebnissen).  Daf"ur wird der Datensatz in Trainings- und Testdaten aufgeteilt. Unser Datensatz besteht aus 1700 selbstaufgenommenen Verkehrsschildern "uber die Webcam des Autos, ca. 400 Bilder pro Objektklasse (STOP, Fussg"anger, 40, 70), die mit einem Softwaretool gelabelt wurden.
+Das Neuronale Netz wurde bereits mit dem VOC Datensatz per Transfer Learning (Die Ergebnisse eines fertig trainierten Netzes werden auf ein neues Netz "ubertragen. Die Layer /Neuronen des Netzes werden nun mit dem neuen Datenset trainiert.) vorverarbeitet. Dies erm"oglicht uns ein vortrainiertes Netz zu verwenden, welches bereits f"ur die Objekterkennung konfiguriert ist und durch unseren Datensatz optimiert wird. Wir trainieren das Netz mit dem Supervised-Learning-Verfahren (ein "uberwachtes Lernen, bei dem die Ergebnisse des Lernprozesses Verglichen werden mit den Referenzergebnissen).  Daf"ur wird der Datensatz in Trainings- und Testdaten aufgeteilt. Unser Datensatz besteht aus 1700 selbstaufgenommenen Verkehrsschildern "uber die Webcam des Autos, ca. 400 Bilder pro Objektklasse (STOP, Fussg"anger, 40, 70), die mit einem Softwaretool Yolo\_mark \cite{Yolo_mark} gelabelt wurden.
 
 Der Trainingsdatensatz wird als Input f"ur das Netz verwendet. Diese passieren das Netz "uber die Neuronen durch die verschiedenen Layer zum Output Quader (Forward Pass). Das Ergebnis der Berechnung wird der mit dem bekannten Ergebnis des Testdatensatzes verglichen und der Fehler/Abweichung berechnet. Dieser Fehler wird durch das Netzwerk r"uckw"arts propagiert (Backward Pass) und jedes Neuron entsprechend angepasst im Verh"altnis zur Learning Rate (0,001). Somit wird das Netz nur minimal ver"andert um ein Overshooting (zu grosse Ver"anderungen, z.B. bei einer Fehlfunktion) zu verhindern. Dieser Ablauf beschreibt eine Trainings-Epoche des Netzes.  Solche eine Epoche wird zum Trainieren mehrere 1000 Mal ausgef"uhrt um ein zufriedenstellendes Ergebnis des Trainings zu erhalten. Darauf wird in dem Abschnitt Validierung des Netzes eingegangen. Das verwendete Darknet YOLO Datenset besteht aus nachfolgenden Elementen:
 
