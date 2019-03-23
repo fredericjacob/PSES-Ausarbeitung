@@ -1,11 +1,11 @@
 \section{Modellbildung und Regelung}
 \label{sec:modelCtrl}
 	
-Im ersten Abschnitt \ref{sec:model} dieses Kapitels wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. Im zweiten Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt werden kann, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
+In Abschnitt \ref{sec:model} wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. In Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt wird, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
 \subsection{Modellierung}
 In diesem Abschnitt wird zunächst das Einspurmodell gezeigt und die dafür nötigen Abmessungen des Fahrzeugs genannt. Anschließend ist in den Abbildungen \ref{fig:lenkgroesse} der Verlauf der Lenkstellgröße über den Lenkwinkel zu sehen und in Abb. \ref{fig:veloStell} der Verlauf der Geschwindigkeit bezogen auf die Geschwindigkeitstellgröße.
 \subsubsection{Ackermann Einspurmodell}\label{sec:model}
-Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells einen Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
+Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert. Das Einspurmodell ist eine übliche Vereinfachung eines vollständigen Modells eines Fahrzeugs mit 4 Rädern. Es fasst jeweils die Vorder- und Hinterräder zu einem in der Längsachse liegendem Rad zusammen. Für das Einspurmodell werden der Radstand und der Schwerpunkt des Fahrzeugs in der Längsachse benötigt. Der Radstand des Fahrzeugs beträgt $L = 0.255 m$. Das Verhältniss zwischen Abstand Hinterachse zum Schwerpunkt zur Hinterachse beträgt ca. $0.601$. Mit Hilfe des Einspurmodells kann für einen Lenkwinkel $\delta$ der sich daraus ergebende Kreisradius $R$ bei kontinuierlichem Lenkwinkel berechnet werden.
 	
 \begin{figure}[h]
 \centering
@@ -15,16 +15,16 @@ Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ack
 \end{figure}
 	
 \subsubsection{Bestimmung der Lenkwinkelübersetzung}\label{sec:lenk}
-Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen. Das Vorgehen hat sich im Projektseminar im vorrausgehenden Jahr bewährt.
+Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen. Das Vorgehen hat sich im Projektseminar im vorausgehenden Jahr bewährt.
 %[$https://moodle.tu-darmstadt.de/pluginfile.php/799141/mod_page/content/14/AusarbeitungDontCodeAndDrive.pdf$].
 
 \begin{itemize}
-\item Das Fahrzeug wurde auf seinem Chassi aufgebockt und ein Rad über einem Winkelmesser zentriert.
+\item Das Fahrzeug wurde auf seinem Chassis aufgebockt und ein Rad über einem Winkelmesser zentriert.
 \item Eine Geschwindigkeit von mindestens $300 \simeq 0.6\frac{m}{s}$ wurde eingestellt.
 \item Die Lenkvorgabe wurde eingestellt und der Lenkwinkel abgelesen.
 \end{itemize}
 
-Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von Matlab ein sechsten Grades Polynom (Gl.~\ref{eq:stell(lenkw)}) approximiert. Dabei ist zu beachten, dass die Koeffizieten $a_6$ und $a_5$ sehr klein sind:
+Aus den sich ergebenden Messpunkten wurde anschließend mit Hilfe von Matlab ein Polynom sechsten Grades (Gl.~\ref{eq:stell(lenkw)}) approximiert. Dabei ist zu beachten, dass die Koeffizieten $a_6$ und $a_5$ sehr klein sind:
 
 \begin{align}
 \begin{split}
@@ -41,14 +41,17 @@ U(\delta) =&5.726\cdot10^{-6}x^6-35.275\cdot10^{-6}x^5 -0.0044x^4\\
 \label{fig:lenkgroesse} 
 \end{figure}
 
-Auffällig ist, dass das Polynom nicht exakt durch $0$ verläuft. Dies ist auch im folgenden Geschwindigkeitstest in Abschnitt \ref{sec:geschw} aufgefallen. Die Lenkstellgröße musste auf $\simeq-70$ festgesetzt werden, um über eine längere Strecke exakt gerade aus zu fahren. Dies kann allerdings auch daran gelegen haben, dass das linke vordere Rad geschliffen hat und das Allradbetriebene Fahrzeug somit nach rechts gezogen hat. Der Antrieb des linken vorderen Rads ist später ganz ausgefallen.
+Auffällig ist, dass das Polynom nicht exakt durch $0$ verläuft. Dies ist auch im folgenden Geschwindigkeitstest in Abschnitt \ref{sec:geschw} aufgefallen. Die Lenkstellgröße musste auf $\simeq-70$ festgesetzt werden, um über eine längere Strecke exakt geradeaus zu fahren. Dies kann allerdings auch daran gelegen haben, dass das linke vordere Rad geschliffen hat und das allradbetriebene Fahrzeug somit nach rechts gezogen hat. Der Antrieb des linken vorderen Rads ist später ganz ausgefallen.
 	
-Eine exaktere Methode wäre, wenn mit verschiedenen konstanten Geschwindigkeiten und Lenkwinkeln Kreise mit festen Radien abzufahren und mit Hilfe des Gyroskops und des Ackermann-Einspur-Modells die entsprechenden Lenkwinkel zu bestimmen. Dazu wäre eine Implementierung einer Odometrie nötig, welche den zurückgelegten Weg und die entsprechende Pose aufzeichnet.
+Eine exaktere Methode wäre es, mit verschiedenen konstanten Geschwindigkeiten und Lenkwinkeln Kreise mit festen Radien abzufahren und mit Hilfe des Gyroskops und des Ackermann-Einspur-Modells die entsprechenden Lenkwinkel zu bestimmen. Dazu wäre eine Implementierung einer Odometrie nötig, welche den zurückgelegten Weg und die entsprechende Pose aufzeichnet.
+%TODO: kurz erklären, warum das nicht gemacht wurde, z.B. einfach zusätzlicher Implementierungsaufwand (Frederic)
 
 
 \subsubsection{Bestimmung der Geschwindigkeitsübersetzung}\label{sec:geschw}
 
-Wie in Abschnitt \ref{sec:lenk} bereits genannt wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen die Geschwindigkeit in $\frac{m}{s}$ bestimmt. Dazu wurde die Zeit gemessen, die das Fahrzeug mit einer Stellgröße benötigt, um eine bekannte Strecke zurückzulegen. Es wurde im Gegensatz zur Lenkwinkelübersetzungsfunktion nicht ein sondern zwei Polynome bestimmt. Wie zu erkennen ist genügt je ein Polynom ersten Grades für vorwärts und rückwärts fahren.
+Wie in Abschnitt \ref{sec:lenk} bereits genannt,
+%TODO: zirkuläre Referenzierung nicht so gut - im vorigen Abschnitt wird Abschnitt 1.3 erwähnt und hier wieder 1.2. Lieber chronologisch bleiben und nicht so viel vorgreifen (Frederic)
+wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen die Geschwindigkeit in $\frac{m}{s}$ bestimmt. Dazu wurde die Zeit gemessen, die das Fahrzeug mit einer Stellgröße benötigt, um eine bekannte Strecke zurückzulegen. Es wurde im Gegensatz zur Lenkwinkelübersetzungsfunktion nicht ein sondern zwei Polynome bestimmt. Wie zu erkennen ist, genügt je ein Polynom ersten Grades für Vorwärts- und Rückwärts-Fahren.
 
 \begin{figure}[h]
 \centering
@@ -57,15 +60,18 @@ Wie in Abschnitt \ref{sec:lenk} bereits genannt wurde ebenfalls eine Funktion be
 \label{fig:veloStell} 
 \end{figure}
 
-Der Verlauf ist ebenso, wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht exakt klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat. Eine exaktere Methode hätte wiederum eine Odometrie verlangt, oder das die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen Zeitraum gemessen worden wären.
+Der Verlauf ist ebenso wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht vollkommen klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat.
+%TODO: verstehe ich nicht ganz - was ist "Vorlauf", warum ist das nicht klar? (Frederic)
+Eine exaktere Methode hätte wiederum eine Odometrie verlangt oder dass die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen Zeitraum gemessen worden wären.
+%TODO: du setzt hier voraus, dass der Leser weiß, was 'Wheelticks' genau sind und von welcher Hallsonde gesprochen wird - ich zumindest weiß nicht, was gemeint ist. :D (Frederic)
 \begin{align}\label{eq:vel}
 v = \frac{num_{wheelticks }\cdot2\pi r_{wheel}}{t}
 \end{align}
-
+%TODO: würde die Formel vll. eher weglassen, sehe keinen Mehrwert darin, die noch mit aufzuführen (Frederic)
 
 \subsection{Trajektorienberechnung}\label{sec:traj}
 
-In diesem Abschnitt wird beschrieben, wie aus den erkannten Fahrbahnmarkierungen aus \ref{sec:linien} eine Referenztrajektorie geplant wird. Benötigt wird mindestens eine Punkteschaar im Fahrzeug- oder Weltkoordinatensystem einer Fahrbahnmarkierung. Aus dieser kann mit Hilfe einer Verschiebung der Punkte eine Trajekorie berechnet werden. Sind Linien mehrerer Markierungen vorhanden ist es außerdem möglich eine Mittelung vorzunehmen.
+In diesem Abschnitt wird beschrieben, wie aus den erkannten Fahrbahnmarkierungen aus Kapitel \ref{sec:linien} eine Referenztrajektorie geplant wird. Benötigt wird mindestens eine Punkteschar im Fahrzeug- bzw. Weltkoordinatensystem einer Fahrbahnmarkierung. Aus dieser kann mit Hilfe einer Verschiebung der Punkte eine Trajektorie berechnet werden. Sind Linien mehrerer Markierungen vorhanden, ist es außerdem möglich, eine Mittelung vorzunehmen.
 
 \begin{figure}[h]
 \centering
@@ -74,13 +80,17 @@ In diesem Abschnitt wird beschrieben, wie aus den erkannten Fahrbahnmarkierungen
 \label{fig:veloStell} 
 \end{figure}
 
-Um die Trajektorie zu bestimmen wurden die verfügbaren Ränder mit Hilfe der alglib \cite{alglib} interpoliert. Zunächst wird eine Linie in Abhängigkeit der Bogenlänge $s$ (Gl.~\ref{eq:s}) parametrisiert. Sodass zu jeder Stützstelle $i$ der linear akkumulierte Weg $s_i$ zwischen den Stützstellen bekannt ist:
+Um die Trajektorie zu bestimmen wurden die verfügbaren Ränder der Fahrbahn mit Hilfe der Numerik-Library alglib \cite{alglib} interpoliert. Zunächst wird eine Linie in Abhängigkeit der Bogenlänge $s$ (Gl.~\ref{eq:s}) parametrisiert, sodass zu jeder
+%TODO: hier wäre noch eine kurze Erklärung der Stützstelle i gut. außerdem finde ich die Beschreibung "linear akkumuliert" zu kompliziert / umständlich (Frederic)
+Stützstelle $i$ der linear akkumulierte Weg $s_i$ zwischen den Stützstellen bekannt ist:
 
 \begin{align}\label{eq:s}
 s_i = \sum\limits_{i=1}^{n} \sqrt{(x_i-x_{i-1})^2+(y_i-y_{i-1})^2} \text{ mit: } s_0 = 0
 \end{align}
 
-Daraufhin werden die Linien durch zwei kubische Splines $x(s)$ und $y(s)$ interpoliert. Somit erhält man die Möglichkeit zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren. Die Splines sind eine Schaar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, doppelt stetig differenzierbar.
+Daraufhin werden die Linien durch zwei kubische Splines $x(s)$ und $y(s)$ interpoliert.
+%TODO: das "somit" erschließt sich mir nicht - worauf bezieht sich das? Die Möglichkeit der Interpolation von Rundkursen ist m.M. nach noch keine logische Konsequenz daraus, zwei Splines zu haben - oder müsste noch genauer erklärt werden. (Frederic)
+Somit erhält man die Möglichkeit zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren. Die Splines sind eine Schar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, zweifach stetig differenzierbar.
 
 \begin{align}
 \begin{split} \label{eq:xs}
@@ -91,7 +101,9 @@ y(s) = a_i s^3+b_i s^2+c_i s+d_i
 \end{split}
 \end{align}
 
-Es ist notwendig die Punkteschaar zu parametrisieren, um die Eindeutigkeit  zu gewährleisten. Die Splines erlauben es in jedem Punkt die Steigung (Gl.~\ref{eq:steigung}) und Krümmung (Gl.~\ref{eq:curv}) der Kurve zu berechnen.
+Es ist notwendig die Punkteschar zu parametrisieren, um die Eindeutigkeit  zu gewährleisten.
+%TODO: die Eindeutigkeit wovon? (Frederic)
+Die Splines erlauben es, in jedem Punkt die Steigung (Gl.~\ref{eq:steigung}) und Krümmung (Gl.~\ref{eq:curv}) der Kurve zu berechnen.
 \begin{align}
 \label{eq:steigung}
 \dot{f}(x,y) = atan2\left(\frac{\dot{y}}{\dot{x}}\right)
@@ -101,12 +113,18 @@ Es ist notwendig die Punkteschaar zu parametrisieren, um die Eindeutigkeit  zu g
 \kappa = \frac{\ddot{x}\dot{y}-\ddot{y}\dot{x}}{\sqrt[3]{\dot{x}^2+\dot{y}^2}}
 \end{align}
 
+%TODO: ALLGEMEIN: du gehst hier bei den ganzen Formeln davon aus, dass der Leser schon sehr tief in der Materie drin ist und genau weiß, welche Variablen was bedeuten und was da jeweils konkret berechnet wird - ist aber nicht unbedingt der Fall. Finde, man wird ganz schön mit Formeln bombardiert, ohne dass diese genauer erklärt werden. Ich würde alle verwendeten Parameter (s, x, y, ...) auch erst mal einführen. Oder im Zweifel auf die ein oder andere Formel verzichten. (Frederic)
+
 \subsection{Regelung}\label{sec:ctrl}
-In diesem Kapitel werden zwei verschiedene Regelkonzepte aufbauend auf die Referenztrajektorie aus Abschnitt~\ref{sec:traj}, die im Laufe des Projektseminars implementiert und getestet wurden, gezeigt. Zunächst wird gezeigt, wie mit Hilfe eines PID-Reglers ein Fehler ausgeregelt wird. Dieser kann aufgrund der Modellierung der Lenkwinkelübersetzung aus Abschnitt \ref{sec:lenk} ebenfalls den aktuellen Lenkwinkel korrigieren. Dazu muss die Ausgabe des Reglers legiglich dem Polynom (Gl.~\ref{eq:stell(lenkw)}) übergeben werden. Andererseits kann der laterale Fehler in $cm$ genutzt werden, um das Stellsignal direkt zu steuern. Weiterhin wird im zweiten Abschnitt dieses Teils eine Regelung gezeigt, die aus der Krümmung (Gl.~\ref{eq:curv}) der Trajektorie direkt den nötigen Lenkwinkel des Fahrzeugs berechnet, um die Trajektorie abzufahren. Dazu wird das Ackermann-Einspur-Modell aus Abschnitt \ref{sec:model} benutzt.
+In diesem Kapitel werden zwei verschiedene Regelkonzepte aufbauend auf die Referenztrajektorie aus Abschnitt~\ref{sec:traj} gezeigt, die im Laufe des Projektseminars implementiert und getestet wurden. Zunächst wird gezeigt, wie mit Hilfe eines PID-Reglers ein Fehler ausgeregelt wird. Dieser kann aufgrund der Modellierung der Lenkwinkelübersetzung aus Abschnitt \ref{sec:lenk} ebenfalls
+%TODO: "ebenfalls": was ist das andere, worauf hier Bezug genommen wird? (Frederic)
+den aktuellen Lenkwinkel korrigieren. Dazu muss die Ausgabe des Reglers lediglich dem Polynom (Gl.~\ref{eq:stell(lenkw)}) übergeben werden. Andererseits kann der laterale Fehler in $cm$ genutzt werden, um das Stellsignal direkt zu steuern. Weiterhin wird im zweiten Abschnitt dieses Teils eine Regelung gezeigt, die aus der Krümmung (Gl.~\ref{eq:curv}) der Trajektorie direkt den nötigen Lenkwinkel des Fahrzeugs berechnet, um die Trajektorie abzufahren. Dazu wird das Ackermann-Einspur-Modell aus Abschnitt \ref{sec:model} benutzt.
 	
 \subsubsection{PID-Regler}\label{sec:pid}
 
-Der PID-Regler (Abb.~\ref{fig:PID-System}) erhält den aktuellen zwischen longitudinaler Achse und der Referenztrajektorie in einem bestimmten Abstand zum Fahrzeug als auszuregelnden Fehler. Dabei besteht der Regler aus drei verschiedenen Elementen. 
+Der PID-Regler (Abb.~\ref{fig:PID-System}) erhält den aktuellen zwischen longitudinaler Achse und der Referenztrajektorie in einem bestimmten Abstand zum Fahrzeug als auszuregelnden Fehler.
+%TODO: da stimmt was nicht mit der Satzstellung - ist kein richtiger Satz :D (Frederic)
+Dabei besteht der Regler aus drei verschiedenen Elementen:
 
 \begin{figure}[h]
 \centering
@@ -115,7 +133,16 @@ Der PID-Regler (Abb.~\ref{fig:PID-System}) erhält den aktuellen zwischen longitu
 \label{fig:PID-System} 
 \end{figure}
 
-Dem P-Glied, welches den Fehler linear verstärkt. Einem I-Glied, welches den Fehler über die Zeit aufsummiert und somit ein Gedächtnis hat. I-Glieder eignen sich besonders, um bleibende Regelabweichungen zu verhindern. Weiterhin ist ein kleiner D-Anteil benutzt worden, um schnell auf auftretende Fehler reagieren zu können. D-Glieder verstärken die Änderung des Fehlers. Im speziellen wurde der PID-Regler allerdings so angepasst, dass für den Fall, dass der Fehler am Sinken ist das I-Glied schneller abgebaut wird. Der I-Anteil steigt weiterhin an, selbst wenn der Fehler bereits ausgeregelt wird. Der exakte Entwurf ist in Abbildung \ref{fig:PID} zu sehen.
+\begin{itemize}
+	\item Das P-Glied verstärkt den aktuellen Fehler linear.
+	\item Das I-Glied summiert den Fehler über die Zeit auf und hat somit ein \glqq Gedächtnis\grqq . I-Glieder eignen sich besonders, um bleibende Regelabweichungen zu verhindern.
+	\item Weiterhin wurde ein kleiner D-Anteil benutzt, um schnell auf auftretende Fehler reagieren zu können. D-Glieder verstärken die Änderung des Fehlers.
+\end{itemize}
+
+Im Speziellen wurde der PID-Regler so angepasst, dass für den Fall, dass der Fehler am Sinken ist, das I-Glied schneller abgebaut wird.
+%TODO: schneller als was? was heißt "abgebaut"? (Frederic)
+Der I-Anteil steigt weiterhin an, selbst wenn der Fehler bereits ausgeregelt wird. Der exakte Entwurf ist in Abbildung \ref{fig:PID} zu sehen.
+%TODO: kurze Beschreibung, was für eine Art von Entwurf / Skizze das ist (Frederic)
 
 
 \begin{figure}[h]
@@ -127,7 +154,7 @@ Dem P-Glied, welches den Fehler linear verstärkt. Einem I-Glied, welches den Feh
 
 \subsubsection{Lenkwinkelbestimmung durch die Trajektorie}\label{sec:curv2lenk}
 
-Die direkte Bestimmung des Lenkwinkels mit Hilfe einer Referenztrajektorie \cite{ackermann} ist eher eine Art der Steuerung als eine Regelung. Diese Methode benötigt eine Trajektorie, wie z.~B. in Abschnitt \ref{sec:traj} beschrieben. Weiterhin wird ein möglichst exaktes Fahrzeugmodell (siehe: \ref{sec:model}) benötigt. Nun wird ein Punkt auf der Trajektorie gewählt, der sich eignet darauf zu regeln. An diesem Punkt wird die Krümmung wie in Gleichung \ref{eq:curv} bestimmt. Aus dem Einspurmodell nach Ackermann ergibt sich, dass für eine Kurvenfahrt konstanten Radius der laterale Abstand ($R$ siehe Abb.~\ref{fig:ackermann}) zwischen Hinterachse des Fahrzeugs und dem augenblicklichen Krümmungszentrum (engl. ICC) dem Kehrwert der Krümmung $\kappa$ entspricht. 
+Die direkte Bestimmung des Lenkwinkels mit Hilfe einer Referenztrajektorie \cite{ackermann} ist eher eine Art der Steuerung als eine Regelung. Diese Methode benötigt eine Trajektorie, wie sie in Abschnitt \ref{sec:traj} beschrieben wird. Weiterhin wird ein möglichst exaktes Fahrzeugmodell (siehe Abschnitt \ref{sec:model}) benötigt. Nun wird ein Punkt auf der Trajektorie gewählt, der sich eignet, darauf zu regeln. An diesem Punkt wird die Krümmung wie in Gleichung \ref{eq:curv} bestimmt. Aus dem Einspurmodell nach Ackermann ergibt sich, dass für eine Kurvenfahrt konstanten Radius der laterale Abstand ($R$ siehe Abb.~\ref{fig:ackermann}) zwischen Hinterachse des Fahrzeugs und dem augenblicklichen Krümmungszentrum (engl. ICC) dem Kehrwert der Krümmung $\kappa$ entspricht. 
 
 \begin{align}
 R = \frac{1}{\kappa}
@@ -139,8 +166,13 @@ Aus diesem Zusammenhang lässt sich nun direkt mit Hilfe der Krümmung der Trajekt
 \delta = \arctan\left(\frac{L_{rear,front}}{\sqrt{\frac{1}{\kappa^2}-L_{rear,CoG}^2}}\right)
 \end{align}
 
-Es ist allerdings auch eine Vereinfachung der Gleichung \ref{eq:lenkwinkel_complex} für sehr große Kurvenradien im Vergleich zu Fahrzeuglänge selbst möglich \cite{acker}:
+%TODO: auch hier wieder: Erklärung der Symbole in der Formel (Frederic)
+
+Im Fall von sehr großen Kurvenradien im Vergleich zur Fahrzeuglänge ist allerdings auch eine Vereinfachung der Gleichung \ref{eq:lenkwinkel_complex} möglich \cite{acker}:
 
 \begin{align}
 \delta = \arctan \frac{L}{R} = \arctan L \cdot \kappa
 \end{align}
+
+%TODO: was noch fehlt in dem Kapitel ist eine Aussage, welchen Ansatz wir letztendlich konkret verwendet haben (und evtl. warum) (Frederic)
+%TODO: ich würde auch noch, zumindest kurz, konkret auf die Implementierung eingehen (z.B. es wurde die Klasse dafür geschrieben und die Node dafür verwendet). Im Moment bleibt es noch sehr abstrakt und es wird mehr erklärt, mit welchen Formeln man welches Problem lösen KÖNNTE. (Frederic)
