@@ -21,7 +21,7 @@ Der erste von uns verwendete Ansatz war die Benutzung der aktuellen Version YOLO
 
 \subsection{Aufbau des neuronalen Netzes}
 \label{sec:cnn_aufbau}
-Ein k"unstliches neuronales Netz besteht aus mehreren Neuronen, die "uber mehrere Schichten (Layer) mit einander verbunden sind (siehe Abb \ref{fig:neunet}). YOLO ist ein Single CNN (Convolution Neuronal Network, faltende neurale Netze),
+Ein k"unstliches neuronales Netz besteht aus mehreren Neuronen, die "uber mehrere Schichten (Layer) mit einander verbunden sind (siehe Abb \ref{fig:neunet}). YOLO ist ein Single CNN (Convolution Neuronal Network, ein faltendes neurales Netz, das ein Input in Form einer Matrix verarbeitet),
 %TODO: wenn so ein Begriff eingeführt wird, sollte er eigentlich auch (zumindest kurz) erläutert werden (Frederic) @edit DP
 welches aufgrund seines schlanken Aufbaus eine enorme Schnelligkeit erm"oglicht. Es verarbeitet ein Bild und detektiert dabei mehrere Objekte (Single Shot Detector). Andere Netze ben"otigen f"ur diese vergleichbare Detektion mehrere Durchl"aufe - jeweils einen Durchlauf f"ur das Detektieren der Objekte und jeweils eine Iteration pro gefundenem Objekt zur Klassifikation (z.B. R-CNN, R-FCN).
 %TODO: Referenzen (Frederic)
@@ -33,14 +33,14 @@ welches aufgrund seines schlanken Aufbaus eine enorme Schnelligkeit erm"oglicht.
 	\label{fig:neunet}
 \end{figure}
 
-Das YOLO CNN besteht aus mehreren Convolution und Maxpool Layers zum subsampling.
+Das YOLO CNN besteht aus mehreren Convolution (Faltungsschichten) und Maxpool Layers (Aufteilung des Input in Rechtecke mit Maximumsbestimmung) zum subsampling.
 %TODO: "Convolution", "Maxpool Layers", "subsampling" -> alles Begriffe, mit denen der Leser in aller Regel nichts direkt anfangen kann (Frederic) @ edit DP Subsampling zum herunterskalieren, 
 Diese reduzieren die Dimension der Eingabedarstellung mit Hilfe von Annahmen,
 %TODO: was für "Annahmen"? -> das muss erklärt werden! (Frederic)
-so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $16*16*14$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen?
+so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $13*13*14$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen?
 %TODO: "Wofür stehen diese Dimensionen" -> ist eine Frage, kann hier nicht so mit Doppelpunkt verwendet werden (Frederic) @edit DP
 
-Das 16 x 16 Grid beschreibt die Gr"osse eines Rasters, in das das Bild unterteilt wird. Die Tiefe 14 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox sowie dessen H"ohe und Breite (x,y).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Ma\ss \ daf\"ur, wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen (STOP, Fussg"anger, 40, 70),  werden der Tiefe des Quaders noch hinzuaddiert,
+Das 13 x 13 Grid beschreibt die Gr"osse eines Rasters, in das das Bild unterteilt wird. Die Tiefe 54 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox(pc) sowie dessen H"ohe und Breite (bx, by, bh, bw).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Ma\ss \ daf\"ur, wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen (STOP, Fussg"anger, 40, 70),  werden der Tiefe des Quaders noch hinzuaddiert,
 %TODO: was sind (unsere) "Objektklassen"? Was is die "Tiefe"? (Frederic) @edit DP
 sodass der Quader nachfolgende Gr"osse besitzt:
 
@@ -48,7 +48,7 @@ sodass der Quader nachfolgende Gr"osse besitzt:
 %TODO: Ich würde entweder alles viel detaillierter erklären oder das meiste rausschmeißen und die Beschreibung des neuronalen Netzes stattdessen ganz allgemein und einfach halten. (Frederic)
 
 \begin{equation}
-\begin{bmatrix}16 * 16 (Grid)\end{bmatrix} * \begin{bmatrix}2 * 5 + 4 (Objektklassen)\end{bmatrix}
+\begin{bmatrix}13 * 13 (Grid)\end{bmatrix} * \begin{bmatrix}10 * 5 (Boundingbox) + 4 (Objektklassen)\end{bmatrix}
 \end{equation}
 
 \begin{figure}[h]
@@ -67,7 +67,7 @@ sodass der Quader nachfolgende Gr"osse besitzt:
 	\label{fig:yolo}
 \end{figure}
 
-Die einzelnen Frames der Webcam werden dem neuronalen Netz als Input zur Verf"ugung gestellt. Somit verwendet das YOLO Netz ein vollst"andiges Bild zur Erkennung, das es uns erm"oglicht, weniger Hintergrundfehler zu erhalten. Au\ss erdem wird der Kontext der Objekte mitbetrachtet. Das gesamte Bild wird in einzelne Grids aufgeteilt und dem CNN "ubergeben. Pro Grid kann ein Objekt erkannt werden. Damit man auch mehrere Objekte detektieren kann, die eventuell weiter entfernt sind, verwenden wir abweichend vom Standard Grid (32 x 32) eine Gr"osse von 16 x 16 Pixel. Der komplexe Prozess des CNN l"asst sich vereinfacht durch diesen Ablauf beschreiben:
+Die einzelnen Frames der Webcam werden dem neuronalen Netz als Input zur Verf"ugung gestellt. Somit verwendet das YOLO Netz ein vollst"andiges Bild zur Erkennung, das es uns erm"oglicht, weniger Hintergrundfehler zu erhalten. Au\ss erdem wird der Kontext der Objekte mitbetrachtet. Das gesamte Bild wird in einzelne Grids aufgeteilt und dem CNN "ubergeben. Pro Grid kann ein Objekt erkannt werden. Damit man auch mehrere Objekte detektieren kann, die eventuell weiter entfernt sind, verwenden wir abweichend vom Standard Grid (32 x 32) eine Gr"osse von 13 x 13 Pixel. Der komplexe Prozess des CNN l"asst sich vereinfacht durch diesen Ablauf beschreiben:
 
 \begin{enumerate}
 	\item Bildinput wird auf Eingangsgr"o\ss e des Netzes angepasst (416 x 416 Pixel)
@@ -88,10 +88,10 @@ Anschlie\ss end wird das Ergebnis der Verkehrsschildererkennung "uber das ROS-Ne
 
 \subsection{Training}
 
-Das Neuronale Netz wurde bereits mit dem VOC Datensatz
-%TODO: was ist "VOC"? -> erklären, kennt der Leser nicht (Frederic)
-per Transfer Learning (Die Ergebnisse eines fertig trainierten Netzes werden auf ein neues Netz "ubertragen. Die Layer /Neuronen des Netzes werden nun mit dem neuen Datenset trainiert.) vorverarbeitet.
-%TODO: schlechter Stil, hier in Klammern ganze Sätze einzuschieben und danach den vorherigen Satz noch zu beenden, verstehe nicht, was gemeint sein soll (Frederic)
+Das Neuronale Netz wurde bereits mit dem Pascal VOC Datensatz (Visual Object Classes, enth"alt standardisierte Bilder zur Objektdetektion)
+%TODO: was ist "VOC"? -> erklären, kennt der Leser nicht (Frederic) @edit DP
+per Transfer Learning vorbverarbeitet. Die Ergebnisse eines fertig trainierten Netzes werden auf ein neues Netz "ubertragen. Die Layer /Neuronen des Netzes werden danach mit dem neuen Datenset trainiert.
+%TODO: schlechter Stil, hier in Klammern ganze Sätze einzuschieben und danach den vorherigen Satz noch zu beenden, verstehe nicht, was gemeint sein soll (Frederic) @edit DP
 Dies erm"oglichte es uns, ein vortrainiertes Netz zu verwenden, welches bereits f"ur die Objekterkennung konfiguriert ist und durch unseren Datensatz optimiert wird. Wir haben das Netz mit dem Supervised-Learning-Verfahren trainiert (ein "uberwachtes Lernen, bei dem die Ergebnisse des Lernprozesses mit den Referenzergebnissen verglichen werden).  Zu diesem Zweck wurde der Datensatz in Trainings- und Testdaten aufgeteilt. Unser Datensatz besteht aus 1700 selbstaufgenommenen Verkehrsschildern "uber die Webcam des Autos, ca. 400 Bilder pro Objektklasse (STOP, Fussg"anger, 40, 70), die mit dem Tool Yolo\_mark \cite{Yolo_mark} gelabelt wurden.
 
 Der Trainingsdatensatz wird als Input f"ur das Netz verwendet. Diese passieren das Netz "uber die Neuronen durch die verschiedenen Layer zum Output Quader (Forward Pass). Das Ergebnis der Berechnung wird mit dem bekannten Ergebnis des Testdatensatzes verglichen und der Fehler/Abweichung berechnet. Dieser Fehler wird durch das Netzwerk r"uckw"arts propagiert (Backward Pass) und jedes Neuron entsprechend im Verh"altnis zur Learning Rate (0,001) angepasst. Somit wird das Netz nur minimal ver"andert, um ein Overshooting (zu gro\ss e Ver"anderungen, z.B. bei einer Fehlfunktion) zu verhindern. Dieser Ablauf beschreibt eine Trainings-Epoche des Netzes.  Solch eine Epoche wird zum Trainieren mehrere 1000 Mal ausgef"uhrt um ein zufriedenstellendes Ergebnis des Trainings zu erhalten. (Darauf wird in folgendem Abschnitt noch genauer eingegangen.) Das verwendete Darknet YOLO Datenset besteht aus nachfolgenden Elementen:
@@ -115,8 +115,8 @@ Die G"ute/Genauigkeit der richtigen Detektion eines Objektes wird durch folgende
 
 Die Detektionsfl"ache wird mit der tats"achlichen Fl"ache eines Objektes vergleichen und der Grad der "Ubereinstimmung bestimmt. W"ahrend des Trainings kann man in Abb. \ref{fig:training} erkennen, dass neben dem rapide absinkenden Fehler (Loss) in blau, der mAP-Wert (mean average precision) in rot, mit Laufe der Iterationen stetig steigt und sich der 100\% Linie ann"ahert (Convergence). Ab ca. 93\% schwankt der Wert immer mehr und n"ahert sich dem Wert 1 an. Dieser Bereich unterscheidet sich signifikant vom restlichen Graphen und deutet auf Overfitting hin.
 
-Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt des Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 70 zu 30.
-%TODO: was ist das für ein Verhältnis bzw. was gibt das an? (Frederic)
+Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt des Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder zur Validierung in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 70 zu 30.
+%TODO: was ist das für ein Verhältnis bzw. was gibt das an? (Frederic) @edit DP
 
 \begin{figure}[h]
 	\centering
@@ -139,8 +139,8 @@ Im zuk\"unftigen Versionen wird der ROS-Wrapper in der Lage sein mit der aktuell
 
 Die Genauigkeit der Schildererkennung kann durch den Datensatz von 1000 gelabelten Bildern pro Klasse verbessert werden.
 
-Die allgemeine Leistungssteigerung der Fahrzeughardware w"urde die Erkennung von vielen weiteren digitalen bzw. dynamischen Schildern erm"oglichen, sodass das Fahrzeug auch in Baustellsituationen entsprechend reagieren kann.
-%TODO: was für "digitale" bzw. "dynamische" Schilder? (Frederic)
+Die allgemeine Leistungssteigerung der Fahrzeughardware w"urde die Erkennung von vielen weiteren digitalen bzw. dynamischen Wechselverkehrszeichen erm"oglichen, sodass das Fahrzeug auch in besonderen Situationen, zum Beispiel bei Sperrung einer Fahrbahn in einer Baustelle, entsprechend reagieren kann.
+%TODO: was für "digitale" bzw. "dynamische" Schilder? (Frederic) @edit Wechselverkehrszeichen ist der Fachbegriff für digitale Schilder die zum Beispiel auf der Autobahn ueber der Fahrbahn haengen und per LED Matrix mit beliebiegen Tect bzw. Schildern beschriftet werden koennen
 %TODO: warum gerade "Baustellsituationen"? würde ich eher weglassen (Frederic)
 
 \begin{figure}[ht]
