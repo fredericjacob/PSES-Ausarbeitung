@@ -49,7 +49,7 @@ nur einzelne Punkte transformiert und direkt auf dem Quellbild arbeitet.
 Die dafür benötigten Transformationsmatrizen sind bereits vorhanden.
 
 %TODO Regelung
-Für die Trajektorienplanung und -Regelung wäre es interessant die genannten Probleme in \ref{sec:ctrlImpl} der Splines der alglib für Geraden weiter zu untersuchen. Gegebenfalls wäre eine Nutzung der Trajektorienfolgeregelung mit einem schwächeren PID-Regler möglich. D.h. das im ersten Schritt der Lenkwinkel über die Krümmung der Trajektorie gestellt wird und nur bei größeren Abweichungen ein PID-Regler eingreift, um einen Fehler auszuregeln.
+Für die Trajektorienplanung und -Regelung wäre es interessant, die genannten Probleme in \ref{sec:ctrlImpl} der Splines der alglib für Geraden weiter zu untersuchen. Gegebenenfalls wäre eine Nutzung der Trajektorienfolgeregelung mit einem schwächeren PID-Regler möglich. Dann würde im ersten Schritt der Lenkwinkel über die Krümmung der Trajektorie eingestellt und nur bei größeren Abweichungen ein PID-Regler dazugeschaltet, um den Fehler auszuregeln.
 
 Die Schildererkennung hat bereits sehr gute Ergebnisse geliefert, oft auf weite Entfernungen, 
 doch das Roboterauto reagiert momentan noch nicht auf erkannte Schilder.
