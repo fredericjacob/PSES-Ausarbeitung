@@ -115,7 +115,7 @@ Die Detektionsfl"ache wird mit der tats"achlichen Fl"ache eines Objektes verglei
 
 Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt das Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder zur Validierung in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 80 zu 20. D.h. von den 1700 gelabelten Bildern werden nur 80\% zum tats"achlichen Training benutzt und mit den restlichen 20\% der Bilder werden die aktuellen Gewichte regelm"a\ss{}ig validiert, um 'overfitting' rechtzeitig zu erkennen. 
 In Abbildung~\ref{fig:training} f"angt der avg\_loss erst bei ca. 4500 Iterationen an, da beim Training h"aufig die Gr"o\ss{}e des Netzeingangs ge"andert wurde. 
-Diese f"uhrt dazu, dass es flexibler gegen"uber variablen Schildergr"o\ss{}en wird und wir auch kleinere Schilder besser erkennen. 
+Diese Variation f"uhrt dazu, dass es flexibler gegen"uber variablen Schildergr"o\ss{}en wird und wir auch kleinere Schilder besser erkennen. 
 %TODO: was ist das für ein Verhältnis bzw. was gibt das an? (Frederic) @edit DP
 
 \begin{figure}[h!]
