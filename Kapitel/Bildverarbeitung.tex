@@ -33,6 +33,7 @@ wurden, werden im folgenden Abschnitt genauer vorgestellt.
 
 
 \subsection{Kalibrierung der Kamera}
+\label{subsec:kalibrierung}
 
 Beim Anbringen der Webcam wurde ein Blickwinkel gew\"ahlt, der zum einen eine m\"oglichst gute Sicht auf die
 Strecke unmittelbar vor dem Fahrzeug erm\"oglicht, aber gleichzeitig ausreichend viel Strecke nach
@@ -115,7 +116,7 @@ in eine eigene ROS-Node \texttt{webcam\_publisher} ausgelagert, welche den
 Das Herzst\"uck der eigentlichen Bildverarbeitung bildet die Klasse \texttt{ImageProcessor}. Sie kapselt
 ein OpenCV-\texttt{Mat}-Objekt und enth\"alt verschiedene, zu gro\ss em Teil auf OpenCV basierende
 Operationen, die darauf (in teilweise beliebiger
-Reihenfolge) ausgef\"uhrt werden k\"nnen. Insbesondere stellt sie die Funktionalit\"at bereit, um
+Reihenfolge) ausgef\"uhrt werden k\"onnen. Insbesondere stellt sie die Funktionalit\"at bereit, um
 
 \begin{itemize}
 	\item eine Transformation des Bildes in die Vogelperspektive anhand eines gegebenen
@@ -139,8 +140,7 @@ Reihenfolge) ausgef\"uhrt werden k\"nnen. Insbesondere stellt sie die Funktional
 	Diese Funktionalit\"at wird sp\"ater zur Ermittlung von Linienpunkten ben\"otigt.
 \end{itemize} 
 
-\textbf{TODO}\\
-- nebeneinander dargestellt und kurz beschrieben: Quellbild - 2D-Bild - 2D-Bin\"arbild\\
+%TODO: nebeneinander dargestellt und kurz beschrieben: Quellbild - 2D-Bild - 2D-Bin\"arbild\\
 
 \subsection{Detektion der Fahrbahnlinien}
 
@@ -183,7 +183,7 @@ der jeweiligen Linie die entsprechenden Fahrzeugkoordinaten zu berechnen und zur
 F\"ur den Betrieb der Linienerkennung im Gesamtsystem existiert die ROS-Node \texttt{lane\_detection},
 welche das ROS-Topic \texttt{camera/frame} subscribed und so die einzelnen Frames, die vom
 \texttt{webcam\_publisher} ver\"offentlicht werden, empf\"angt. Zus\"atzlich werden die Farbschwellwerte
-\"uber \texttt{rqt\_reconfigure}\ref{TODO: Link zu rqt_reconfigure} empfangen und gesetzt und zusammen mit
+\"uber \texttt{rqt\_reconfigure}\cite{reconfigure} empfangen und gesetzt und zusammen mit
 dem aktuellsten Frame an eine Instanz des \texttt{TransformingLaneDetector} \"ubergeben, welcher die
 eigentlichen Berechnungen vornimmt.
 
