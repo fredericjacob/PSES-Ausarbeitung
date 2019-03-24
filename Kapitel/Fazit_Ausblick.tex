@@ -3,12 +3,16 @@
 
 \subsection{Fazit}
 Das Projektseminar Echtzeitsysteme 2018/2019 hat dem Team einen guten Einblick in die Problemlösung von echtzeitkritischen Aufgaben gegeben. 
-Dabei hervorzuheben ist, dass die freie Gestaltung der Aufgabenstellung es ermöglicht hat, viele Lösungsmöglichkeiten auszuprobieren und kreativ zu sein. 
-Die Herausforderung, auf einem ressourcenbeschränkten Roboterauto eine robuste, autonome Fahrassistenz zu betreiben, hat gezeigt, welche alltäglichen Probleme in der Industrie auftreten können. 
+Dabei hervorzuheben ist, dass die freie Gestaltung der Aufgabenstellung es ermöglicht hat, 
+viele Lösungsmöglichkeiten auszuprobieren und kreativ zu sein. 
+Die Herausforderung, auf einem ressourcenbeschränkten Roboterauto eine robuste, 
+autonome Fahrassistenz zu betreiben, hat gezeigt, welche alltäglichen Probleme in der Industrie auftreten können. 
 Bei allen Ideen zur Verbesserung von Prozessen muss daran gedacht werden, die eventuell auftretenden Zeitverzögerungen im System zu beachten.
 
-Des Weiteren hat das Team einen tiefen Einblick sowohl in die unterschiedlichsten Methoden der Bildverarbeitung mittels OpenCV, als auch in die Regelung von autonomen Fahrzeugen und den Einsatz eines neuronalen Netzwerkes für die Schildererkennung erhalten. 
-Die Arbeit mit dem Software-Framework ROS\cite{ROS} hat es ermöglicht, die Kommunikation zwischen den einzelnen Komponenten des Projekts gut zu strukturieren.
+Des Weiteren hat das Team einen tiefen Einblick sowohl in die unterschiedlichsten Methoden der Bildverarbeitung mittels OpenCV, 
+als auch in die Regelung von autonomen Fahrzeugen und den Einsatz eines neuronalen Netzes für die Schildererkennung erhalten. 
+Die Arbeit mit dem Software-Framework ROS~\cite{ROS} hat es ermöglicht, 
+die Kommunikation zwischen den einzelnen Komponenten des Projekts gut zu strukturieren.
 
 Durch Nutzung dieser Methoden und Technologien ist es uns zu Ende des Projekts gelungen,
 eine funktionierende Linienerkennung, eine entsprechende Regelung
@@ -17,17 +21,20 @@ mittels eines neuronalen Netzwerks zu implementieren.
 
 \subsection{Probleme}
 Während des Projekts sind einige Probleme wiederholt aufgetaucht. 
-Das Häufigste war das Ausfallen der \textbf{\textit{uc\underline{\ }bridge}}, was die Arbeit mit dem Roboterauto oft schwer beeinträchtigt hat. 
-Die Ultraschallsensoren, insbesondere der Vordere, waren oft stark verrauscht oder haben komplett ausgesetzt. 
-Zuletzt haben der Antrieb und das Differential des vorderen linken Rades nicht mehr funktioniert, wodurch das Auto oft aus der Fahrbahn gezogen wurde.
+Das Häufigste war das Ausfallen der uc\_{}bridge, was die Arbeit mit dem Roboterauto oft schwer beeinträchtigt hat. 
+Die Ultraschallsensoren, insbesondere der Vordere, waren stark verrauscht, haben komplett ausgesetzt oder nicht sinnvolle Ergebnisse geliefert. 
+Zuletzt haben der Antrieb und das Differential des vorderen linken Rades nicht mehr funktioniert, 
+wodurch das Auto kontinuierlich aus der Fahrbahn gezogen wurde. Dadurch wurde der Regler stärker beansprucht als nötig.
 
-Manchmal, wenn das Roboterauto mit einem Monitor verbunden werden sollte, hat der VGA-Anschluss des Autos kein Signal gesendet und man musste das Roboterauto manuell neu starten, um einen Monitor anschlie\ss{}en zu können. 
+Manchmal, wenn das Roboterauto mit einem Monitor verbunden werden sollte, hat der VGA-Anschluss des Autos kein Signal gesendet und man musste das Roboterauto manuell neu starten, um einen Monitor anschließen zu können. 
 
-Die Lichtverhältnisse in den Räumen haben die Funktionalität der Bildverarbeitung au\ss erdem stark beeinträchtigt: 
+Die Lichtverhältnisse in den Räumen haben die Funktionalität der Bildverarbeitung außerdem stark beeinträchtigt: 
 Je nach Tageszeit hat das Testen zu unterschiedlichen Ergebnissen geführt. 
 Das Team hat am Anfang des Projekts beschlossen, die bereitgestellte Webcam statt der Kinect zu nutzen, 
 doch ohne eine feste Halterung hat sich die Kamera häufig verstellt und musste neu eingestellt werden. 
-Eine vorgegebene Halterung wäre daher wünschenswert gewesen.
+Eine vorgegebene Halterung wäre daher wünschenswert gewesen. 
+
+Bessere Hardware, die es erlaubt eine höhere Bildrate über das Netzwerk zu versenden sowie ein eigenes WLAN außerhalb der limitierenden Beschränkungen an Netzwerktraffic von eduroam, wäre ebenfalls Vorteilhaft.
 
 \subsection{Ausblick}
 Obwohl die grundsätzlich angestrebte Funktionalität erreicht wurde, bieten einzelne
@@ -38,11 +45,14 @@ Webcam-Bilds in die Vogelperspektive, wobei alle weiteren Verarbeitungsschritte 
 transformierten Bild basieren.\\
 Um sich den relativ zeitaufwendigen Schritt der perspektivischen Transformation zu sparen, könnte
 in Zukunft eine Unterklasse von \texttt{LaneDetector} implementiert werden, die
-nur einzelne Punkte transformiert und direkt auf dem Quellbild arbeitet. Die dafür
-benötigten Transformationsmatrizen sind bereits vorhanden.
-%TODO: Ausblick Regelung? Anderen Ansatz verwenden/testen? (Frederic)
+nur einzelne Punkte transformiert und direkt auf dem Quellbild arbeitet. 
+Die dafür benötigten Transformationsmatrizen sind bereits vorhanden.
 
-Die Schildererkennung hat bereits sehr gute Ergebnisse geliefert, oft auf weite Entfernungen, doch das Roboterauto reagiert momentan noch nicht auf erkannte Schilder.
+%TODO Regelung
+Für die Trajektorienplanung und -Regelung wäre es interessant die genannten Probleme in \ref{sec:ctrlImpl} der Splines der alglib für Geraden weiter zu untersuchen. Gegebenfalls wäre eine Nutzung der Trajektorienfolgeregelung mit einem schwächeren PID-Regler möglich. D.h. das im ersten Schritt der Lenkwinkel über die Krümmung der Trajektorie gestellt wird und nur bei größeren Abweichungen ein PID-Regler eingreift, um einen Fehler auszuregeln.
+
+Die Schildererkennung hat bereits sehr gute Ergebnisse geliefert, oft auf weite Entfernungen, 
+doch das Roboterauto reagiert momentan noch nicht auf erkannte Schilder.
 Ein Zustandsautomat zur Weiterverarbeitung der erkannten Objekte wurde bereits implementiert, dessen
 Ausgabe-Messages müssten im nächsten Schritt jedoch noch von der Fahrzeugsteuerung
 abonniert und weiterverwendet werden.
