@@ -19,7 +19,21 @@ Zus\"atzlich werden die erkannten Punkte der Fahrbahnlinien sowie die daraus erz
 Trajektorie aus den entprechenden Topics ausgelesen, \"uber ein 
 \texttt{CameraCalibration}-Objekt zur\"uck in Bildkoordinaten transformiert und in
 das angezeigte Bild eingezeichnet, wodurch eine Kontrolle der aktuell ermittelten
-Linien in Echtzeit m\"oglich ist. 
+Linien in Echtzeit m\"oglich ist (siehe Abbildung \ref{fig:monitoring}).
+
+\begin{figure}[!htb]
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{images/transformed_color}
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{images/trajectory}
+	\end{minipage}
+\label{fig:monitoring}
+\caption{2D-Bild und zugeh\"origes Monitoring-Bild des \texttt{image\_viewer}}
+\end{figure}
 
 \subsection{Einzeichnen eines Rasters ins Bild und Aufnehmen von Fotos}
 F\"ur die Transformation der Kamera-(3D-)Pixelkoordinaten in die Vogelperspektive (2D) ist wie in Abschnitt \ref{subsec:kalibrierung} beschrieben eine Kalibrierung der Kamera notwendig.
@@ -42,7 +56,4 @@ Wir haben rqt\_reconfigure konkret f\"ur das Setup der Kamera (Parameter wie Hel
 \subsection{Netzwerkkommunikation}
 Um die umfangreichen Optionen von Monitoring und Rekonfiguration sinnvoll nutzen zu k\"onnen, bedurfte es einer Kommunikation \"uber das Netzwerk. Da hier keine Zeitkritischen Funktionen ausgef\"uhrt werden, l\"auft die Kommunikation in unserem Projekt \"uber das Universit\"atsnetzwerk eduroam. Dazu m\"ussen das Fahrzeug, wie auch die Monitoring-Einheit, sich im Netzwerk befinden. Das Fahrzeug ist in dem Fall der ROS-Master und stellt die Daten bereit. Damit man von au\ss erhalb auf den Master zugreifen kann, muss man die IP-Adresse des Fahrzeugs wissen. Diese muss auf dem Laptop einerseits in die Datei \textbf{/etc/hosts} zusammen mit dem entsprechenden Host-Namen eingetragen sein und als Umgebungsvariable \texttt{ROS\_MASTER\_URI=http://[IP-Adresse]:11311} im Terminal exportiert werden. Danach l\"auft die Kommunikation wie gewohnt \"uber ROS.
 
-Auf diese Weise war es uns m\"oglich, \"uber Netzwerk die Aufnahmen der Webcam an einen Monitoring-Laptop zu senden, die erkannten Linien und die geplante Trajektorie anzuzeigen und die Parameter auf dem Fahrzeug dynamisch zu rekonfigurieren. W\"ahrend unseren Versuchen hat sich eine Latenz zwischen 200 und 600ms ergeben was f\"ur unsere Monitoring und Debugging Zwecke ausreichend ist. \\
-
-TODO:\\
-Bild! Hat jemand eventuell schon ein sch"ones oder muss man das neu aufnehmen?
+Auf diese Weise war es uns m\"oglich, \"uber Netzwerk die Aufnahmen der Webcam an einen Monitoring-Laptop zu senden, die erkannten Linien und die geplante Trajektorie anzuzeigen und die Parameter auf dem Fahrzeug dynamisch zu rekonfigurieren. W\"ahrend unseren Versuchen hat sich eine Latenz zwischen 200 und 600ms ergeben was f\"ur unsere Monitoring und Debugging Zwecke ausreichend ist.
