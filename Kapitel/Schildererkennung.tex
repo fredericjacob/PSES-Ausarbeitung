@@ -113,23 +113,25 @@ Die G"ute/Genauigkeit der richtigen Detektion eines Objektes wird durch folgende
 
 Die Detektionsfl"ache wird mit der tats"achlichen Fl"ache eines Objektes vergleichen und der Grad der "Ubereinstimmung bestimmt. W"ahrend des Trainings kann man in Abb. \ref{fig:training} erkennen, dass neben dem rapide absinkenden Fehler (Loss) in blau, der mAP-Wert (mean average precision) in rot, mit Laufe der Iterationen stetig steigt und sollte sich der 100\% Linie ann"ahern (Convergence). Ab ca. 70\% schwankt der Wert immer mehr und wurde nicht besser. Dies deutet darauf hin, dass sich das Netz nicht mehr weiter verbessert. Mit einem anderen Netz vom Typ YOLOv3-tiny wurde mit dem gleichen Datensatz ein mAP-Wert von $93\%$ erreicht, bevor mit diesem Netz overfitting eingetreten ist. 
 
-Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt das Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder zur Validierung in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 80 zu 20. D.h. von den 1700 gelabelten Bildern werden nur 80\% zum tats"achlichen Training benutzt und mit den restlichen 20\% der Bilder werden die aktuellen Gewichte regelm"a\ss{}ig validiert, um 'overfitting' rechtzeitig zu erkennen.
+Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt das Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder zur Validierung in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 80 zu 20. D.h. von den 1700 gelabelten Bildern werden nur 80\% zum tats"achlichen Training benutzt und mit den restlichen 20\% der Bilder werden die aktuellen Gewichte regelm"a\ss{}ig validiert, um 'overfitting' rechtzeitig zu erkennen. 
+In Abbildung~\ref{fig:training} f"angt der avg\_loss erst bei ca. 4500 Iterationen an, da beim Training h"aufig die Gr"o\ss{}e des Netzeingangs ge"andert wurde. 
+Diese f"uhrt dazu, dass es flexibler gegen"uber variablen Schildergr"o\ss{}en wird und wir auch kleinere Schilder besser erkennen. 
 %TODO: was ist das für ein Verhältnis bzw. was gibt das an? (Frederic) @edit DP
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.9\textwidth]{images/map}
-	\caption{Ergebnisse des Trainings}
-	\label{fig:ergebnis}
+	\includegraphics[scale = 0.35]{images/chart}
+	\caption{Trainingsverlauf}
+	\label{fig:training}
 \end{figure}
 
 Nach dem Training k"onnen wir die jeweiligen Objektklassen (STOP, Fussg"anger, 40, 70) mit einer Wahrscheinlichkeit von 72\% bzw. bei dem Stop-Schild mit 76.5\% richtig erkennen. Der IoU (siehe Abschnitt \ref{sec:cnn_aufbau}) Wert liegt bei 49\% und der mAP bei 72\%. (Siehe Abb. \ref{fig:ergebnis}).
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[height=0.8\textwidth]{images/chart}
-	\caption{Trainingsverlauf}
-	\label{fig:training}
+	\includegraphics[width=0.8\textwidth]{images/map}
+	\caption{Ergebnisse des Trainings}
+	\label{fig:ergebnis}
 \end{figure}
 
 \subsection{Optimierungen}
