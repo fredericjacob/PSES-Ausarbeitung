@@ -1,7 +1,7 @@
 \section{Modellbildung und Regelung}
 \label{sec:modelCtrl}
 	
-In Abschnitt \ref{sec:model} wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. In Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt wird, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend eine Beurteilung darüber gegeben.
+In Abschnitt \ref{sec:model} wird das Fahrzeug zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ackermann} modelliert und anschließend die Geschwindigkeits- und Lenkwinkelbeziehungen zu den jeweiligen Stellgrößen bestimmt. In Abschnitt \ref{sec:traj} wird gezeigt, wie aus den erkannten Linien aus Kapitel \ref{sec:linien} eine Trajektorie bestimmt wird, welche als Referenzpfad oder zur direkten Steuerung genutzt werden kann. Im letzten Teil werden die zwei getesteten Regelkonzepte erläutert und abschließend die genutzte Implementierung und eine kurze Beurteilung darüber gegeben.
 \subsection{Modellierung}
 In diesem Abschnitt wird zunächst das Einspurmodell gezeigt und die dafür nötigen Abmessungen des Fahrzeugs genannt. Anschließend ist in den Abbildungen \ref{fig:lenkgroesse} der Verlauf der Lenkstellgröße über den Lenkwinkel zu sehen und in Abb. \ref{fig:veloStell} der Verlauf der Geschwindigkeit bezogen auf die Geschwindigkeitstellgröße.
 \subsubsection{Ackermann Einspurmodell}\label{sec:model}
@@ -15,8 +15,7 @@ Das Fahrzeug wird zunächst mit Hilfe des Einspurmodells nach Ackermann \cite{ack
 \end{figure}
 	
 \subsubsection{Bestimmung der Lenkwinkelübersetzung}\label{sec:lenk}
-Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen. Das Vorgehen hat sich im Projektseminar im vorausgehenden Jahr bewährt.
-%[$https://moodle.tu-darmstadt.de/pluginfile.php/799141/mod_page/content/14/AusarbeitungDontCodeAndDrive.pdf$].
+Im weiteren wird der Lenkwinkel für verschiedene Stellgrößen bestimmt. Dazu wurde für jeden Lenkwinkel wie folgt vorgegangen. Das Vorgehen hat sich im Projektseminar im vorausgehenden Jahr \cite{dontcode} bewährt.
 
 \begin{itemize}
 \item Das Fahrzeug wurde auf seinem Chassis aufgebockt und ein Rad über einem Winkelmesser zentriert.
@@ -43,8 +42,9 @@ U(\delta) =&5.726\cdot10^{-6}x^6-35.275\cdot10^{-6}x^5 -0.0044x^4\\
 
 Auffällig ist, dass das Polynom nicht exakt durch $0$ verläuft. Dies ist auch im folgenden Geschwindigkeitstest in Abschnitt \ref{sec:geschw} aufgefallen. Die Lenkstellgröße musste auf $\simeq-70$ festgesetzt werden, um über eine längere Strecke exakt geradeaus zu fahren. Dies kann allerdings auch daran gelegen haben, dass das linke vordere Rad geschliffen hat und das allradbetriebene Fahrzeug somit nach rechts gezogen hat. Der Antrieb des linken vorderen Rads ist später ganz ausgefallen.
 	
-Eine exaktere Methode wäre es, mit verschiedenen konstanten Geschwindigkeiten und Lenkwinkeln Kreise mit festen Radien abzufahren und mit Hilfe des Gyroskops und des Ackermann-Einspur-Modells die entsprechenden Lenkwinkel zu bestimmen. Dazu wäre eine Implementierung einer Odometrie nötig, welche den zurückgelegten Weg und die entsprechende Pose aufzeichnet.
+Eine exaktere Methode wäre es, mit verschiedenen konstanten Geschwindigkeiten und Lenkwinkeln Kreise mit festen Radien abzufahren und mit Hilfe des Gyroskops und des Ackermann-Einspur-Modells die entsprechenden Lenkwinkel zu bestimmen. Dazu wäre eine Implementierung einer Odometrie nötig, welche den zurückgelegten Weg und die entsprechende Pose aufzeichnet. Aufgrund der Komplexität und Zeitmangel wurde dies nicht zusätzlich implementiert.
 %TODO: kurz erklären, warum das nicht gemacht wurde, z.B. einfach zusätzlicher Implementierungsaufwand (Frederic)
+%DONE
 
 
 \subsubsection{Bestimmung der Geschwindigkeitsübersetzung}\label{sec:geschw}
@@ -60,14 +60,17 @@ wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen di
 \label{fig:veloStell} 
 \end{figure}
 
-Der Verlauf ist ebenso wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht vollkommen klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat.
+Der Verlauf ist ebenso wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht vollkommen klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat. D.h. das Fahrzeug ist nicht direkt an der Startlinie der abgemessenen Strecke losgefahren, sondern davor um sicherzustellen, dass die Zielgeschwindigkeit erreicht ist.
 %TODO: verstehe ich nicht ganz - was ist "Vorlauf", warum ist das nicht klar? (Frederic)
-Eine exaktere Methode hätte wiederum eine Odometrie verlangt oder dass die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen Zeitraum gemessen worden wären.
+%DONE
+Eine exaktere Methode hätte wiederum eine Odometrie verlangt oder dass die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen Zeitraum gemessen worden wären. 'Wheelticks' sind die mit Hilfe einer Hallsonde gemessenen Umdrehungen eines Rades. Eine Hallsonde misst Magnetfelder und kann Metalle sensieren. Dies wird dazu genutzt, in dem ein sensiertes Metall im Rad bei jeder Umdrehung dieses erkannt wird.
 %TODO: du setzt hier voraus, dass der Leser weiß, was 'Wheelticks' genau sind und von welcher Hallsonde gesprochen wird - ich zumindest weiß nicht, was gemeint ist. :D (Frederic)
+%DONE?
 \begin{align}\label{eq:vel}
 v = \frac{num_{wheelticks }\cdot2\pi r_{wheel}}{t}
 \end{align}
 %TODO: würde die Formel vll. eher weglassen, sehe keinen Mehrwert darin, die noch mit aufzuführen (Frederic)
+
 
 \subsection{Trajektorienberechnung}\label{sec:traj}
 
@@ -80,17 +83,18 @@ In diesem Abschnitt wird beschrieben, wie aus den erkannten Fahrbahnmarkierungen
 \label{fig:veloStell} 
 \end{figure}
 
-Um die Trajektorie zu bestimmen wurden die verfügbaren Ränder der Fahrbahn mit Hilfe der Numerik-Library alglib \cite{alglib} interpoliert. Zunächst wird eine Linie in Abhängigkeit der Bogenlänge $s$ (Gl.~\ref{eq:s}) parametrisiert, sodass zu jeder
+Um die Trajektorie zu bestimmen wurden die verfügbaren Ränder der Fahrbahn mit Hilfe der Numerik-Library alglib \cite{alglib} interpoliert. Die $i$ Punkte der erkannten Linien werden als Stützstellen zur Trajektorienberechnung genutzt. Zunächst wird eine Linie in Abhängigkeit der Bogenlänge $s$ (Gl.~\ref{eq:s}) parametrisiert. Dazu wird zu jeder
 %TODO: hier wäre noch eine kurze Erklärung der Stützstelle i gut. außerdem finde ich die Beschreibung "linear akkumuliert" zu kompliziert / umständlich (Frederic)
-Stützstelle $i$ der linear akkumulierte Weg $s_i$ zwischen den Stützstellen bekannt ist:
+Stützstelle $i$ der linear aufsummierte Weg $s_i$ zwischen den Stützstellen berechnet:
 
 \begin{align}\label{eq:s}
 s_i = \sum\limits_{i=1}^{n} \sqrt{(x_i-x_{i-1})^2+(y_i-y_{i-1})^2} \text{ mit: } s_0 = 0
 \end{align}
 
-Daraufhin werden die Linien durch zwei kubische Splines $x(s)$ und $y(s)$ interpoliert.
+Daraufhin werden die Linien durch zwei kubische Splines $x(s)$ und $y(s)$ interpoliert. Abhängig von der Bogenlänge $s$, oder dem auf dem Spline zurückgelegten Weg, können mit diesen beiden Splines auch zwischen den Stützstellen Punkte der Linien bestimmt werden.
 %TODO: das "somit" erschließt sich mir nicht - worauf bezieht sich das? Die Möglichkeit der Interpolation von Rundkursen ist m.M. nach noch keine logische Konsequenz daraus, zwei Splines zu haben - oder müsste noch genauer erklärt werden. (Frederic)
-Somit erhält man die Möglichkeit zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren. Die Splines sind eine Schar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, zweifach stetig differenzierbar.
+%REVIEW
+Die Parametrisierung erlaubt es zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren, da diese Polynome jeweils eindeutig sind. Die Splines sind eine Schar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, zweifach stetig differenzierbar.
 
 \begin{align}
 \begin{split} \label{eq:xs}
@@ -101,8 +105,10 @@ y(s) = a_i s^3+b_i s^2+c_i s+d_i
 \end{split}
 \end{align}
 
-Es ist notwendig die Punkteschar zu parametrisieren, um die Eindeutigkeit  zu gewährleisten.
+%Es ist notwendig die Punkteschar zu parametrisieren, um die Eindeutigkeit  zu gewährleisten.
 %TODO: die Eindeutigkeit wovon? (Frederic)
+%DONE verschoben nach oben, um damit auch den anderen TODO zu lösen
+%REVIEW
 Die Splines erlauben es, in jedem Punkt die Steigung (Gl.~\ref{eq:steigung}) und Krümmung (Gl.~\ref{eq:curv}) der Kurve zu berechnen.
 \begin{align}
 \label{eq:steigung}
@@ -116,15 +122,24 @@ Die Splines erlauben es, in jedem Punkt die Steigung (Gl.~\ref{eq:steigung}) und
 %TODO: ALLGEMEIN: du gehst hier bei den ganzen Formeln davon aus, dass der Leser schon sehr tief in der Materie drin ist und genau weiß, welche Variablen was bedeuten und was da jeweils konkret berechnet wird - ist aber nicht unbedingt der Fall. Finde, man wird ganz schön mit Formeln bombardiert, ohne dass diese genauer erklärt werden. Ich würde alle verwendeten Parameter (s, x, y, ...) auch erst mal einführen. Oder im Zweifel auf die ein oder andere Formel verzichten. (Frederic)
 
 \subsection{Regelung}\label{sec:ctrl}
-In diesem Kapitel werden zwei verschiedene Regelkonzepte aufbauend auf die Referenztrajektorie aus Abschnitt~\ref{sec:traj} gezeigt, die im Laufe des Projektseminars implementiert und getestet wurden. Zunächst wird gezeigt, wie mit Hilfe eines PID-Reglers ein Fehler ausgeregelt wird. Dieser kann aufgrund der Modellierung der Lenkwinkelübersetzung aus Abschnitt \ref{sec:lenk} ebenfalls
+In diesem Kapitel werden zwei verschiedene Regelkonzepte aufbauend auf die Referenztrajektorie aus Abschnitt~\ref{sec:traj} gezeigt, die im Laufe des Projektseminars implementiert und getestet wurden. Zunächst wird gezeigt, wie mit Hilfe eines PID-Reglers ein Fehler ausgeregelt wird. Einerseits kann dieser aufgrund der vorliegenden Modellierung der Lenkwinkelübersetzung aus Abschnitt \ref{sec:lenk} 
 %TODO: "ebenfalls": was ist das andere, worauf hier Bezug genommen wird? (Frederic)
 den aktuellen Lenkwinkel korrigieren. Dazu muss die Ausgabe des Reglers lediglich dem Polynom (Gl.~\ref{eq:stell(lenkw)}) übergeben werden. Andererseits kann der laterale Fehler in $cm$ genutzt werden, um das Stellsignal direkt zu steuern. Weiterhin wird im zweiten Abschnitt dieses Teils eine Regelung gezeigt, die aus der Krümmung (Gl.~\ref{eq:curv}) der Trajektorie direkt den nötigen Lenkwinkel des Fahrzeugs berechnet, um die Trajektorie abzufahren. Dazu wird das Ackermann-Einspur-Modell aus Abschnitt \ref{sec:model} benutzt.
 	
 \subsubsection{PID-Regler}\label{sec:pid}
 
-Der PID-Regler (Abb.~\ref{fig:PID-System}) erhält den aktuellen zwischen longitudinaler Achse und der Referenztrajektorie in einem bestimmten Abstand zum Fahrzeug als auszuregelnden Fehler.
+Der PID-Regler in (Abb.~\ref{fig:PID-System}) erhält den aktuellen lateralen Fehler, zwischen longitudinaler Achse und der Referenztrajektorie, in einem bestimmten Abstand zum Fahrzeug als auszuregelnden Fehler.
 %TODO: da stimmt was nicht mit der Satzstellung - ist kein richtiger Satz :D (Frederic)
-Dabei besteht der Regler aus drei verschiedenen Elementen:
+%DONE Facepalm
+Der Regler besteht aus drei verschiedenen Elementen:
+
+
+\begin{itemize}
+	\item Das P-Glied verstärkt den aktuellen Fehler linear.
+	\item Das I-Glied summiert den Fehler über die Zeit auf und hat somit ein \glqq Gedächtnis\grqq . I-Glieder eignen sich besonders, um bleibende Regelabweichungen zu verhindern.
+	\item Weiterhin wurde ein kleiner D-Anteil benutzt, um schnell auf auftretende Fehler reagieren zu können. D-Glieder verstärken die Änderung des Fehlers.
+\end{itemize}
+
 
 \begin{figure}[h]
 \centering
@@ -133,16 +148,11 @@ Dabei besteht der Regler aus drei verschiedenen Elementen:
 \label{fig:PID-System} 
 \end{figure}
 
-\begin{itemize}
-	\item Das P-Glied verstärkt den aktuellen Fehler linear.
-	\item Das I-Glied summiert den Fehler über die Zeit auf und hat somit ein \glqq Gedächtnis\grqq . I-Glieder eignen sich besonders, um bleibende Regelabweichungen zu verhindern.
-	\item Weiterhin wurde ein kleiner D-Anteil benutzt, um schnell auf auftretende Fehler reagieren zu können. D-Glieder verstärken die Änderung des Fehlers.
-\end{itemize}
-
-Im Speziellen wurde der PID-Regler so angepasst, dass für den Fall, dass der Fehler am Sinken ist, das I-Glied schneller abgebaut wird.
+Im Speziellen wurde der PID-Regler bezogen zur Standardmodellierung so angepasst, dass falls der Fehler am Sinken ist, der integrierende Anteil schneller abgebaut wird.  
 %TODO: schneller als was? was heißt "abgebaut"? (Frederic)
-Der I-Anteil steigt weiterhin an, selbst wenn der Fehler bereits ausgeregelt wird. Der exakte Entwurf ist in Abbildung \ref{fig:PID} zu sehen.
+Beim Standardmodell eines PID-Reglers steigt der I-Anteil weiterhin an, selbst wenn der Fehler bereits ausgeregelt wird. Der exakte Entwurf des implementierten PID-Reglers ist in Abbildung \ref{fig:PID} zu sehen. Für den Standardentwurf würde der Fehler \textit{err} aus Abbilung~\ref{fig:PID}, wie beim P und D-Glied in den Integrator und von dort in den Verstäker einfließen.  
 %TODO: kurze Beschreibung, was für eine Art von Entwurf / Skizze das ist (Frederic)
+
 
 
 \begin{figure}[h]
@@ -167,12 +177,20 @@ Aus diesem Zusammenhang lässt sich nun direkt mit Hilfe der Krümmung der Trajekt
 \end{align}
 
 %TODO: auch hier wieder: Erklärung der Symbole in der Formel (Frederic)
-
-Im Fall von sehr großen Kurvenradien im Vergleich zur Fahrzeuglänge ist allerdings auch eine Vereinfachung der Gleichung \ref{eq:lenkwinkel_complex} möglich \cite{acker}:
+\begin{itemize}
+\item $L_{rear,front}$ entspricht dem Radstand des Fahrzeugs.
+\item $L_{rear,CoG}$ entspricht dem Abstand zwischen Hinterachse und dem Schwerpunkt (engl. center of gravity) des Fahrzeugs.
+\end{itemize}
+Im Fall von sehr großen Kurvenradien ($\frac{1}{\kappa}=R >> L_{rear,CoG}$) im Vergleich zur Fahrzeuglänge ist allerdings auch eine Vereinfachung der Gleichung \ref{eq:lenkwinkel_complex} möglich \cite{acker}:
 
 \begin{align}
 \delta = \arctan \frac{L}{R} = \arctan L \cdot \kappa
 \end{align}
+
+\subsection{Implementierung}\label{sec:ctrlImpl}
+
+Der PID-Regler wurde als Klasse \textit{Controller} implementiert und ist in der Lage verschiedene Inputs auszuregeln. Dabei ist es möglich nach dem genannten Konzept einen einzelnen Fehler an einem Punkt auf der Trajektorie oder Schaar von Fehlern zu übergeben. Zur Berechnung der Trajektorie wurde eine weitere Klasse, die auf die \textit{alglib} \cite{alglib} aufbaut implementiert. Diese benötigt lediglich zwei Vektoren mit den Punkten einer Linie als Input. Die Punkte werden daraufhin interpoliert und zwei kubische Splines (siehe. Gl.~\ref{eq:xs}~\&~\ref{eq:ys}) werden bestimmt. Es ist möglich verschiedene Operationen der \textit{alglib} auf den Spline-Objekten der Klasse anzuwenden oder aus einer oder zwei solcher Instanzen der Klasse, die eine Linie interpolieren eine Trajektorie zu bestimmen. Dazu kann man einen Offset in lateraler Richtung zur Linie addieren lassen oder zwei Linien gewichtet Vermischen. Die \textit{alglib} selbst bietet Funktionen an die Ableitungen eines Splines an einem Punkt zu bestimmen. Diese wurde im Vorlauf hinreichend an Beispielen getestet, um mit Hilfe der Ableitungen die Krümmung zu bestimmen. Dies war nötig, um die Machbarkeit des zweiten Regelentwurfs (siehe~\ref{sec:curv2lenk}) theoretisch nachzuweisen. Dazu wurden Kreise und festdefinierte stetige Kurven interpoliert und anschließend die bekannte Krümmung durch die Funktionen der \textit{alglib} überprüft. In der Praxis waren die Splines der \textit{alglib} jedoch nicht nutzbar, da es regelmäßig auf Geradenstücken in manchen Punkten zu extrem großen Krümmungen (kleinen Kurvenradien) gekommen ist. Deshalb wurde eine weitere Klasse \cite{poly} getestet, welche mit Hilfe eines Least-Squares-Verfahrens ein Polynom bestimmt, dass die Punkteschaar interpoliert. Die darauf bestimmten Ableitungen haben robustere Ergebnisse geliefert, jedoch kam es trotzdme noch zu größeren Regelabweichungen. Weshalb letztlich der PID-Regler zum Einsatz kam, welcher robustere Fahrergebnisse geliefert hat. \\
+Außerdem wurde noch eine Vehicle Klasse implementiert, der das Fahrzeugmodell zugrunde liegt. Diese ermöglicht es zum Beispiel aus dem berechneten Lenkwinkel der Trajektorie eine Lenkstellgröße zu bestimmen.
 
 %TODO: was noch fehlt in dem Kapitel ist eine Aussage, welchen Ansatz wir letztendlich konkret verwendet haben (und evtl. warum) (Frederic)
 %TODO: ich würde auch noch, zumindest kurz, konkret auf die Implementierung eingehen (z.B. es wurde die Klasse dafür geschrieben und die Node dafür verwendet). Im Moment bleibt es noch sehr abstrakt und es wird mehr erklärt, mit welchen Formeln man welches Problem lösen KÖNNTE. (Frederic)

@@ -16,7 +16,7 @@
     \node [input, name=input] {};
     \node [sum, right of=input] (sum) {};
     \node [block, right of=sum] (controller) {PID-Regler};
-    \node [block, right of=controller, pin={[pinstyle]above:D},
+    \node [block, right of=controller, %pin={[pinstyle]above:D},
             node distance=3cm] (system) {Fahrzeug};
 
     \draw [->] (controller) -- node[name=u] {$u$} (system);
