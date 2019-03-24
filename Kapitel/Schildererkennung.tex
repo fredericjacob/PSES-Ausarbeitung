@@ -16,7 +16,7 @@ Um diese Motivation umsetzen zu k"onnen, haben wir ein k"unstliches neuronales N
 basierend auf dem \textbf{Darknet}, einem Machine Learning Framework basierend auf C und CUDA.
 Die allgemeine Herausforderung eines Objektdetektors besteht darin, das Objekt im Bild zu detektieren und anschliessend zu klassifizieren. Der Vorteil des YOLO Netzes besteht neben der gleichzeitigen Lokalisierung \& Klassifizierung mehrerer Objekte in einem Bild, dass es auf unerwartete Eingaben sehr adaptiv reagiert und somit f"ur weniger Ausf"alle des Erkennungssystems sorgt. Dies erm"oglicht uns auch mehrere Verkehrsschilder auf einmal in einem Bild zu erkennen, wobei das aktuell n"achstgelegene Schild selektiert wird.
 
-Der erste von uns verwendete Ansatz war die Benutzung der aktuellen Version YOLOv3. Es stellte sich jedoch heraus, dass die eingeschr"ankte Hardware auf dem Fahrzeug der limitierende Faktor ist und der ROS Wrapper nicht das aktuelle YOLOv3 verwenden kann. Daher wurde aus Gr"unden der Performance die YOLOv2 Tiny Version verwendet, welche eine reduzierte Variante des YOLOv2 darstellt und eine geringere Pr"azision in der Erkennung hat.
+Der erste von uns verwendete Ansatz war die Benutzung der aktuellen Version YOLOv3 Tiny. Es stellte sich jedoch heraus, dass die eingeschr"ankte Hardware auf dem Fahrzeug der limitierende Faktor ist und der ROS Wrapper nicht das aktuelle YOLOv3 Tiny verwenden kann. Daher wurde aus Gr"unden der Performance die YOLOv2 Tiny Version verwendet, welche eine reduzierte Variante des YOLOv2 darstellt und eine geringere Pr"azision in der Erkennung hat.
 
 \subsection{Aufbau des neuronalen Netzes}
 \label{sec:cnn_aufbau}
@@ -90,7 +90,7 @@ Das Neuronale Netz wurde bereits mit dem Pascal VOC Datensatz (Visual Object Cla
 %TODO: was ist "VOC"? -> erklären, kennt der Leser nicht (Frederic) @edit DP
 per Transfer Learning vorverarbeitet. Die Ergebnisse eines fertig trainierten Netzes werden dabei auf ein neues Netz "ubertragen. Die Layer/Neuronen des Netzes werden danach mit dem neuen Datenset trainiert.
 %TODO: schlechter Stil, hier in Klammern ganze Sätze einzuschieben und danach den vorherigen Satz noch zu beenden, verstehe nicht, was gemeint sein soll (Frederic) @edit DP
-Dies erm"oglichte es uns, ein vortrainiertes Netz zu verwenden, welches bereits f"ur die Objekterkennung konfiguriert ist und durch unseren Datensatz optimiert wird. Wir haben das Netz mit dem Supervised-Learning-Verfahren trainiert (ein "uberwachtes Lernen, bei dem die Ergebnisse des Lernprozesses mit den Referenzergebnissen verglichen werden).  Zu diesem Zweck wurde der Datensatz in Trainings- und Testdaten aufgeteilt. Unser Datensatz besteht aus 1700 selbstaufgenommenen Verkehrsschildern "uber die Webcam des Autos, ca. 400 Bilder pro Objektklasse (STOP, Fussg"anger, 40, 70), die mit dem Tool Yolo\_mark \cite{Yolo_mark} gelabelt wurden.
+Dies erm"oglichte es uns, ein vortrainiertes Netz zu verwenden, welches bereits f"ur die Objekterkennung konfiguriert ist und durch unseren Datensatz optimiert wird. Wir haben das Netz mit dem Supervised-Learning-Verfahren trainiert (ein "uberwachtes Lernen, bei dem die Ergebnisse des Lernprozesses mit den Referenzergebnissen verglichen werden).  Zu diesem Zweck wurde der Datensatz in Trainings- und Testdaten aufgeteilt. Unser Datensatz besteht aus 1695 selbstaufgenommenen Verkehrsschildern "uber die Webcam des Autos, ca. 400 Bilder pro Objektklasse (STOP, Fussg"anger, 40, 70), die mit dem Tool Yolo\_mark~\cite{Yolo_mark} gelabelt wurden.
 
 Der Trainingsdatensatz wird als Input f"ur das Netz verwendet. Diese passieren das Netz "uber die Neuronen durch die verschiedenen Layer zum Output Quader (Forward Pass). Das Ergebnis der Berechnung wird mit dem bekannten Ergebnis des Testdatensatzes verglichen und der Fehler/Abweichung berechnet. Dieser Fehler wird durch das Netzwerk r"uckw"arts propagiert (Backward Pass) und jedes Neuron entsprechend im Verh"altnis zur Learning Rate (0,001) angepasst. Somit wird das Netz nur minimal ver"andert, um ein Overshooting (zu gro\ss e Ver"anderungen, z.B. bei einer Fehlfunktion) zu verhindern. Dieser Ablauf beschreibt eine Trainings-Epoche des Netzes.  Solch eine Epoche wird zum Trainieren mehrere 1000 Mal ausgef"uhrt um ein zufriedenstellendes Ergebnis des Trainings zu erhalten. (Darauf wird in folgendem Abschnitt noch genauer eingegangen.) Das verwendete Darknet YOLO Datenset besteht aus nachfolgenden Elementen:
 
@@ -111,25 +111,25 @@ Die G"ute/Genauigkeit der richtigen Detektion eines Objektes wird durch folgende
 	\label{fig:genauigkeit}
 \end{figure}
 
-Die Detektionsfl"ache wird mit der tats"achlichen Fl"ache eines Objektes vergleichen und der Grad der "Ubereinstimmung bestimmt. W"ahrend des Trainings kann man in Abb. \ref{fig:training} erkennen, dass neben dem rapide absinkenden Fehler (Loss) in blau, der mAP-Wert (mean average precision) in rot, mit Laufe der Iterationen stetig steigt und sich der 100\% Linie ann"ahert (Convergence). Ab ca. 93\% schwankt der Wert immer mehr und n"ahert sich dem Wert 1 an. Dieser Bereich unterscheidet sich signifikant vom restlichen Graphen und deutet auf Overfitting hin.
+Die Detektionsfl"ache wird mit der tats"achlichen Fl"ache eines Objektes vergleichen und der Grad der "Ubereinstimmung bestimmt. W"ahrend des Trainings kann man in Abb. \ref{fig:training} erkennen, dass neben dem rapide absinkenden Fehler (Loss) in blau, der mAP-Wert (mean average precision) in rot, mit Laufe der Iterationen stetig steigt und sollte sich der 100\% Linie ann"ahern (Convergence). Ab ca. 70\% schwankt der Wert immer mehr und wurde nicht besser. Dies deutet darauf hin, dass sich das Netz nicht mehr weiter verbessert. Mit einem anderen Netz vom Typ YOLOv3-tiny wurde mit dem gleichen Datensatz ein mAP-Wert von $93\%$ erreicht, bevor mit diesem Netz overfitting eingetreten ist. 
 
-Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt des Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder zur Validierung in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 70 zu 30.
+Overfitting beschreibt das Problem, dass ein Netz beim Trainieren alle bereits bekannten Bilder sehr oft als Input erhalten hat und diese eher auswendig lernt anstatt das Konzepts des Bildes zu lernen. Um dieses ungewollte Verhalten zu minimieren werden beim Training in jedem Layer des Netzwerks eine gewisse Anzahl an Neuronen ausgelassen (Dropout). Zus"atzlich werden die Bilder zur Validierung in einem Trainingsdatenset und Testdatenset aufgeteilt mit dem Verh"altnis 80 zu 20. D.h. von den 1700 gelabelten Bildern werden nur 80\% zum tats"achlichen Training benutzt und mit den restlichen 20\% der Bilder werden die aktuellen Gewichte regelm"a\ss{}ig validiert, um 'overfitting' rechtzeitig zu erkennen.
 %TODO: was ist das für ein Verhältnis bzw. was gibt das an? (Frederic) @edit DP
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.85\textwidth]{images/training}
-	\caption{Trainingsverlauf}
-	\label{fig:training}
-\end{figure}
-
-Nach dem Training k"onnen wir die jeweiligen Objektklassen (STOP, Fussg"anger, 40, 70) mit einer Wahrscheinlichkeit von 90\% bzw. bei dem Schild 70 mit 77\% richtig erkennen. Der IoU (siehe Abschnitt \ref{sec:cnn_aufbau}) Wert liegt bei 63\% und der mAP bei 87\%. (Siehe Abb. \ref{fig:ergebnis}).
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.9\textwidth]{images/ergebnis}
+	\includegraphics[width=0.9\textwidth]{images/map}
 	\caption{Ergebnisse des Trainings}
 	\label{fig:ergebnis}
+\end{figure}
+
+Nach dem Training k"onnen wir die jeweiligen Objektklassen (STOP, Fussg"anger, 40, 70) mit einer Wahrscheinlichkeit von 72\% bzw. bei dem Stop-Schild mit 76.5\% richtig erkennen. Der IoU (siehe Abschnitt \ref{sec:cnn_aufbau}) Wert liegt bei 49\% und der mAP bei 72\%. (Siehe Abb. \ref{fig:ergebnis}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=0.8\textwidth]{images/chart}
+	\caption{Trainingsverlauf}
+	\label{fig:training}
 \end{figure}
 
 \subsection{Optimierungen}
