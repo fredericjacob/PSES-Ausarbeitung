@@ -37,10 +37,10 @@ Das YOLO CNN besteht aus mehreren Convolution (Faltungsschichten) und Maxpool La
 %TODO: "Convolution", "Maxpool Layers", "subsampling" -> alles Begriffe, mit denen der Leser in aller Regel nichts direkt anfangen kann (Frederic) @ edit DP Subsampling zum herunterskalieren, 
 Diese reduzieren die Dimension der Eingabedarstellung mit Hilfe von Annahmen,
 %TODO: was für "Annahmen"? -> das muss erklärt werden! (Frederic)
-so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $13*13*54$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen?
+so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $13*13*45$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen?
 %TODO: "Wofür stehen diese Dimensionen" -> ist eine Frage, kann hier nicht so mit Doppelpunkt verwendet werden (Frederic) @edit DP
 
-Das 13 x 13 Grid beschreibt die Gr"osse eines Rasters, in das das Bild unterteilt wird. Die Tiefe 54 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox(pc) sowie dessen H"ohe und Breite (bx, by, bh, bw).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Ma\ss \ daf\"ur, wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen (STOP, Fussg"anger, 40, 70),  werden der Tiefe des Quaders noch hinzuaddiert,
+Das 13 x 13 Grid beschreibt die Gr"osse eines Rasters, in das das Bild unterteilt wird. Die Tiefe 45 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox(pc) sowie dessen H"ohe und Breite (bx, by, bh, bw).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Ma\ss \ daf\"ur, wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen (STOP, Fussg"anger, 40, 70),  werden der Tiefe des Quaders noch hinzuaddiert,
 %TODO: was sind (unsere) "Objektklassen"? Was is die "Tiefe"? (Frederic) @edit DP
 sodass der Quader nachfolgende Gr"osse besitzt:
 
@@ -48,7 +48,7 @@ sodass der Quader nachfolgende Gr"osse besitzt:
 %TODO: Ich würde entweder alles viel detaillierter erklären oder das meiste rausschmeißen und die Beschreibung des neuronalen Netzes stattdessen ganz allgemein und einfach halten. (Frederic)
 
 \begin{equation}
-\begin{bmatrix}13 * 13 (Grid)\end{bmatrix} * \begin{bmatrix}10 * 5 (Boundingbox) + 4 (Objektklassen)\end{bmatrix}
+\begin{bmatrix}13 * 13 (Grid)\end{bmatrix} * \begin{bmatrix}5 * [ 5 (Boundingbox) + 4 (Objektklassen)]\end{bmatrix}
 \end{equation}
 
 \begin{figure}[h]
