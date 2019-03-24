@@ -186,10 +186,23 @@ Im Fall von sehr großen Kurvenradien ($\frac{1}{\kappa}=R >> L_{rear,CoG}$) im V
 
 \subsection{Implementierung}\label{sec:ctrlImpl}
 
-Der PID-Regler wurde als Klasse \texttt{Controller} implementiert und ist in der Lage verschiedene Inputs auszuregeln. Dabei ist es möglich nach dem genannten Konzept einen einzelnen Fehler an einem Punkt auf der Trajektorie oder Schar von Fehlern zu übergeben.
+Der PID-Regler wurde als Klasse \texttt{Controller} implementiert und ist in der Lage verschiedene Inputs auszuregeln. 
+Dabei ist es möglich nach dem genannten Konzept einen einzelnen Fehler an einem Punkt auf der Trajektorie oder Schar von Fehlern zu übergeben.
 
-Zur Berechnung der Trajektorie wurde eine weitere Klasse, die auf die \textit{alglib} \cite{alglib} aufbaut, implementiert. Diese benötigt lediglich zwei Vektoren mit den Punkten einer Linie als Input. Die Punkte werden daraufhin interpoliert und zwei kubische Splines (siehe. Gl.~\ref{eq:xs}~\&~\ref{eq:ys}) werden bestimmt. Es ist möglich, verschiedene Operationen der \textit{alglib} auf den Spline-Objekten der Klasse anzuwenden oder aus einer oder zwei solcher Instanzen der Klasse, die eine Linie interpolieren, eine Trajektorie zu bestimmen. Dazu kann ein Offset in lateraler Richtung zur Linie addiert werden oder zwei Linien gewichtet miteinander vermischt werden. Die \textit{alglib} selbst bietet Funktionen an, um die Ableitungen eines Splines an einem Punkt zu bestimmen. Diese wurde im Vorlauf hinreichend an Beispielen getestet, um mit Hilfe der Ableitungen die Krümmung zu bestimmen. Dies war nötig, um die Machbarkeit des zweiten Regelentwurfs (siehe~\ref{sec:curv2lenk}) theoretisch nachzuweisen. Dazu wurden Kreise und festdefinierte stetige Kurven interpoliert und anschließend die bekannte Krümmung durch die Funktionen der \textit{alglib} überprüft. In der Praxis waren die Splines der \textit{alglib} jedoch nicht nutzbar, da es regelmäßig auf Geradenstücken in manchen Punkten zu extrem großen Krümmungen (kleinen Kurvenradien) gekommen ist.
+Zur Berechnung der Trajektorie wurde eine weitere Klasse \texttt{Trajektory} angelegt, die auf die \textit{alglib} \cite{alglib} aufbaut, implementiert. 
+Diese benötigt lediglich zwei Vektoren mit den Punkten einer Linie als Input. 
+Die Punkte werden daraufhin interpoliert und zwei kubische Splines (siehe. Gl.~\ref{eq:xs}~\&~\ref{eq:ys}) werden bestimmt. 
+Es ist möglich, verschiedene Operationen der \textit{alglib} auf den Spline-Objekten der Klasse anzuwenden oder aus einer oder zwei solcher Instanzen der Klasse, die eine Linie interpolieren, eine Trajektorie zu bestimmen.
+ Dazu kann ein Offset in lateraler Richtung zur Linie addiert werden oder zwei Linien gewichtet miteinander vermischt werden. 
+ Die \textit{alglib} selbst bietet Funktionen an, um die Ableitungen eines Splines an einem Punkt zu bestimmen.
+  Diese wurde im Vorlauf hinreichend an Beispielen getestet, um mit Hilfe der Ableitungen die Krümmung zu bestimmen.
+   Dies war nötig, um die Machbarkeit des zweiten Regelentwurfs (siehe~\ref{sec:curv2lenk}) theoretisch nachzuweisen.
+    Dazu wurden Kreise und festdefinierte stetige Kurven interpoliert und anschließend die bekannte Krümmung durch die Funktionen der \textit{alglib} überprüft.
+ In der Praxis waren die Splines der \textit{alglib} jedoch nicht nutzbar, da es regelmäßig auf Geradenstücken in manchen Punkten zu extrem großen Krümmungen (kleinen Kurvenradien) gekommen ist.
 
-Deshalb wurde eine weitere Klasse \cite{poly} getestet, welche mit Hilfe eines Least-Squares-Verfahrens ein Polynom bestimmt, dass die Punkteschaar interpoliert. Die darauf bestimmten Ableitungen haben robustere Ergebnisse geliefert, jedoch kam es trotzdem noch zu größeren Regelabweichungen. Aus diesem Grund kam letztlich der PID-Regler zum Einsatz, welcher robustere Fahrergebnisse liefern konnte.
+Deshalb wurde eine weitere Klasse \cite{poly} getestet, welche mit Hilfe eines Least-Squares-Verfahrens ein Polynom bestimmt, dass die Punkteschaar interpoliert. 
+Die darauf bestimmten Ableitungen haben robustere Ergebnisse geliefert, jedoch kam es trotzdem noch zu größeren Regelabweichungen. 
+Aus diesem Grund kam letztlich der PID-Regler zum Einsatz, welcher robustere Fahrergebnisse liefern konnte.
 
-Des Weiteren wurde eine Klasse \texttt{Vehicle} implementiert, der das Fahrzeugmodell zugrunde liegt. Diese ermöglicht es zum Beispiel, aus dem berechneten Lenkwinkel der Trajektorie eine Lenkstellgröße zu bestimmen.
+Des Weiteren wurde eine Klasse \texttt{Vehicle} implementiert, der das Fahrzeugmodell zugrunde liegt. 
+Diese ermöglicht es zum Beispiel, aus dem berechneten Lenkwinkel der Trajektorie eine Lenkstellgröße zu bestimmen.
