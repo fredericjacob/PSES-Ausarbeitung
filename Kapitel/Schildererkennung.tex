@@ -13,16 +13,16 @@ F\"ur unsere selbst gew\"ahlte Zusatzaufgabe sollte das Fahrzeug, "ahnlich wie e
 \subsection{Implementierung}
 Um diese Motivation umsetzen zu k"onnen, haben wir ein k"unstliches neuronales Netz gew"ahlt. Dieses ist biologischen Prozessen nachempfunden und wird vermehrt im Bereich des maschinellen Lernen von Bildern verwendet. Das neuronale Netzwerk YOLO (You Only Look Once \cite{darknet13}) ist ein State-of-the-art real-time Objektdetektor
 %TODO: dieses "state-of-the-art" ist eigentlich nur ein Kampfbegriff für "neuster Stand" und sagt m.Mn. nach nichts über die Technologie aus (Frederic)
-basierend auf dem \textbf{Darknet} Netzwerk.
-%TODO: Darknet kurz erklären (Frederic)
+basierend auf dem \textbf{Darknet} , ein Machine Learning Framework basierend auf C und CUDA.
+%TODO: Darknet kurz erklären (Frederic) @edit DP
 Die allgemeine Herausforderung eines Objektdetektors besteht darin, das Objekt im Bild zu detektieren und anschliessend zu klassifizieren. Der Vorteil des YOLO Netzes besteht neben der gleichzeitigen Lokalisierung \& Klassifizierung mehrerer Objekte in einem Bild, dass es auf unerwartete Eingaben sehr adaptiv reagiert und somit f"ur weniger Ausf"alle des Erkennungssystems sorgt. Dies erm"oglicht uns auch mehrere Verkehrsschilder auf einmal in einem Bild zu erkennen, wobei das aktuell n"achstgelegene Schild selektiert wird.
 
 Der erste von uns verwendete Ansatz war die Benutzung der aktuellen Version YOLOv3. Es stellte sich jedoch heraus, dass die eingeschr"ankte Hardware auf dem Fahrzeug der limitierende Faktor ist und der ROS Wrapper nicht das aktuelle YOLOv3 verwenden kann. Daher wurde aus Gr"unden der Performance die YOLOv2 Tiny Version verwendet, welche eine reduzierte Variante des YOLOv2 darstellt und eine geringere Pr"azision in der Erkennung hat.
 
 \subsection{Aufbau des neuronalen Netzes}
 \label{sec:cnn_aufbau}
-Ein k"unstliches neuronales Netz besteht aus mehreren Neuronen, die "uber mehrere Schichten (Layer) mit einander verbunden sind (siehe Abb \ref{fig:neunet}). YOLO ist ein Single CNN (Convolution Neuronal Network),
-%TODO: wenn so ein Begriff eingeführt wird, sollte er eigentlich auch (zumindest kurz) erläutert werden (Frederic)
+Ein k"unstliches neuronales Netz besteht aus mehreren Neuronen, die "uber mehrere Schichten (Layer) mit einander verbunden sind (siehe Abb \ref{fig:neunet}). YOLO ist ein Single CNN (Convolution Neuronal Network, faltende neurale Netze),
+%TODO: wenn so ein Begriff eingeführt wird, sollte er eigentlich auch (zumindest kurz) erläutert werden (Frederic) @edit DP
 welches aufgrund seines schlanken Aufbaus eine enorme Schnelligkeit erm"oglicht. Es verarbeitet ein Bild und detektiert dabei mehrere Objekte (Single Shot Detector). Andere Netze ben"otigen f"ur diese vergleichbare Detektion mehrere Durchl"aufe - jeweils einen Durchlauf f"ur das Detektieren der Objekte und jeweils eine Iteration pro gefundenem Objekt zur Klassifikation (z.B. R-CNN, R-FCN).
 %TODO: Referenzen (Frederic)
 
@@ -34,14 +34,14 @@ welches aufgrund seines schlanken Aufbaus eine enorme Schnelligkeit erm"oglicht.
 \end{figure}
 
 Das YOLO CNN besteht aus mehreren Convolution und Maxpool Layers zum subsampling.
-%TODO: "Convolution", "Maxpool Layers", "subsampling" -> alles Begriffe, mit denen der Leser in aller Regel nichts direkt anfangen kann (Frederic)
+%TODO: "Convolution", "Maxpool Layers", "subsampling" -> alles Begriffe, mit denen der Leser in aller Regel nichts direkt anfangen kann (Frederic) @ edit DP Subsampling zum herunterskalieren, 
 Diese reduzieren die Dimension der Eingabedarstellung mit Hilfe von Annahmen,
 %TODO: was für "Annahmen"? -> das muss erklärt werden! (Frederic)
-so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $16*16*14$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen:
-%TODO: "Wofür stehen diese Dimensionen" -> ist eine Frage, kann hier nicht so mit Doppelpunkt verwendet werden (Frederic)
+so dass der Rechenaufwand erheblich reduziert wird. Am Ende befindet sich ein $16*16*14$ Quader, der die Klassifikation und Detektion des verarbeiteten Inputs "ubernimmt. Wof"ur stehen diese Dimensionen?
+%TODO: "Wofür stehen diese Dimensionen" -> ist eine Frage, kann hier nicht so mit Doppelpunkt verwendet werden (Frederic) @edit DP
 
-Das 16 x 16 Grid beschreibt die Gr"osse eines Rasters, in das das Bild unterteilt wird. Die Tiefe 14 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox sowie dessen H"ohe und Breite (x,y).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Ma\ss \ daf\"ur, wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen werden der Tiefe noch hinzuaddiert,
-%TODO: was sind (unsere) "Objektklassen"? Was is die "Tiefe"? (Frederic)
+Das 16 x 16 Grid beschreibt die Gr"osse eines Rasters, in das das Bild unterteilt wird. Die Tiefe 14 l"asst sich in zwei Werte aufteilen. Zum einen die Startposition der Boundingbox sowie dessen H"ohe und Breite (x,y).  Zum anderen die IoU (Intersection over Union). Dieser Wert gibt das Verh"altnis zwischen der "uberlappenden Fl"ache und der vereinigten Fl"ache an. Veranschaulicht ist dies ein Ma\ss \ daf\"ur, wie gut eine Detektion mit der realen Position des Objekts vergleichbar ist (siehe Abb. \ref{fig:stoppschild}). Das neuronale Netz berechnet den IoU-Wert und gibt somit ihre Treffergenauigkeit an. Die Anzahl unserer 4 Objektklassen (STOP, Fussg"anger, 40, 70),  werden der Tiefe des Quaders noch hinzuaddiert,
+%TODO: was sind (unsere) "Objektklassen"? Was is die "Tiefe"? (Frederic) @edit DP
 sodass der Quader nachfolgende Gr"osse besitzt:
 
 %TODO: ZUM ABSCHNITT: Das klingt gerade alles für mich noch sehr schwammig, es werden haufenweise Begriffe eingeführt, die man als Fachfremder (jemand, der nichts mit neuronalen Netzwerken zu tun hat) nicht versteht... Z.B. die "Tiefe" bzw. der Begriff "Quader" kommen ohne Zusammenhang. (Frederic)
