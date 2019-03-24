@@ -1,8 +1,11 @@
 \section{Fazit und Ausblick}
 \label{sec:fazit}
+
 \subsection{Fazit}
-\subsubsection{Fazit Rundfahrt}
-\subsubsection{Fazit Schildererkennung}
+Das Projektseminar Echtzeitsysteme 2018/2019 hat dem Team einen guten Einblick in die Probleml\"osung mit echtzeitkritischen Systemen gegeben. Dabei hervorzuheben ist, das die freie Gestaltung der Aufgabenstellung erm\"oglicht hat viele L\"osungsm\"oglichkeiten auszuprobieren und kreativ zu sein. Die Herausforderung auf einem ressourcenbeschr\"ankten Roboterauto eine robuste, autonome Fahrassistenz zu betreiben, hat gezeigt, welche allt\"aglichen Probleme in der Industrie auftreten k\"onnen. F\"ur jede Idee, Prozesse zu verbessern, muss daran gedacht werden, die eventuell auftretenden Zeitverz\"ogerungen im System zu beachten. Des Weiteren hat das Team einen tiefen Einblick sowohl in die unterschiedlichsten Methoden der Bildverarbeitung, als auch in die Regelung von autonomen Fahrzeugen und den Einsatz eines neuronalen Netzwerkes f\"ur die Schildererkennung erhalten. Die Arbeit mit dem Software-Framework ROS\cite{ROS} hat es erm\"oglicht die Kommunikation zwischen den einzelnen Komponenten des Projekts zu strukturieren.
+
+\subsection{Probleme}
+W\"ahrend des Projekts sind einige Probleme immer wieder aufgetaucht. Das H\"aufigste ist jedoch das Ausfallen der \textbf{\textit{uc\underline{\ }bridge}}, was die Arbeit mit dem Roboterauto oft schwer beeintr\"achtigt hat. Die Ultraschallsensoren, insbesondere der Vordere, waren oft stark verrauscht oder haben komplett ausgesetzt. Zuletzt haben der Antrieb und das Differential des vorderen linken Rades nicht mehr funktioniert, wodurch das Auto oft aus der Fahrbahn gezogen wurde. Manchmal, wenn das Roboterauto mit einem Monitor verbunden werden sollte, hat der VGA-Anschluss des Autos kein Signal gesendet und man musste das Roboterauto manuell neu starten, um einen Monitor anschlie\ss{}en zu k\"onnen. Auch die Lichtverh\"altnisse in den R\"aumen haben die Funktionalit\"at der Bildverarbeitung stark beeintr\"achtigt. Ganz nach Tageszeit hat das Testen zu unterschiedlichen Ergebnissen gef\"uhrt. Das Team hat am Anfang des Projekts beschlossen die bereitgestellte Webcam, statt der Kinect zu benutzen, doch ohne eine feste Halterung hat dies oft dazu gef\"uhrt, dass die Kamera neu eingestellt werden musste. Eine vorgegebene Halterung w\"are w\"unschenswert.
+
 \subsection{Ausblick}
-\subsubsection{Ausblick Rundfahrt}
-\subsubsection{Ausblick Schildererkennung}
+Die Schildererkennung hat sehr gute Ergebnisse geleistet, oft auf weite Entfernungen, doch das Roboterauto hat noch keine Reaktion auf die Erkennung gezeigt. Das ver\"offentlichte ROS-Topic des Zustandsautomaten muss von der Regelung abonniert und weiterverwendet werden.
