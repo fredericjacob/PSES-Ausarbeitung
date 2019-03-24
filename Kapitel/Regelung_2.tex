@@ -63,7 +63,7 @@ wurde ebenfalls eine Funktion bestimmt, die für die verschiedenen Stellgrößen di
 Der Verlauf ist ebenso wie die Lenkwinkelübersetzung nicht exakt, da mit der Hand gestoppt wurde und nicht vollkommen klar ist, ob das Fahrzeug trotz Vorlauf schon die exakte Geschwindigkeit erreicht hat. D.h. das Fahrzeug ist nicht direkt an der Startlinie der abgemessenen Strecke losgefahren, sondern davor um sicherzustellen, dass die Zielgeschwindigkeit erreicht ist.
 %TODO: verstehe ich nicht ganz - was ist "Vorlauf", warum ist das nicht klar? (Frederic)
 %DONE
-Eine exaktere Methode hätte wiederum eine Odometrie verlangt oder dass die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen Zeitraum gemessen worden wären. 'Wheelticks' sind die mit Hilfe einer Hallsonde gemessenen Umdrehungen eines Rades. Eine Hallsonde misst Magnetfelder und kann Metalle sensieren. Dies wird dazu genutzt, in dem ein sensiertes Metall im Rad bei jeder Umdrehung dieses erkannt wird.
+Eine exaktere Methode hätte wiederum eine Odometrie verlangt oder dass die 'Wheelticks' (Gl.~\ref{eq:vel}) der Hallsonde über einen gewissen Zeitraum gemessen worden wären. ('Wheelticks' sind die mit Hilfe einer Hallsonde gemessenen Umdrehungen eines Rades. Die Hallsonde misst dafür Magnetfelder und kann Metalle sensieren. Dies wird dazu genutzt, um ein sensiertes Metall im Rad bei jeder Umdrehung zu erkennen.)
 %TODO: du setzt hier voraus, dass der Leser weiß, was 'Wheelticks' genau sind und von welcher Hallsonde gesprochen wird - ich zumindest weiß nicht, was gemeint ist. :D (Frederic)
 %DONE?
 \begin{align}\label{eq:vel}
@@ -94,7 +94,7 @@ s_i = \sum\limits_{i=1}^{n} \sqrt{(x_i-x_{i-1})^2+(y_i-y_{i-1})^2} \text{ mit: }
 Daraufhin werden die Linien durch zwei kubische Splines $x(s)$ und $y(s)$ interpoliert. Abhängig von der Bogenlänge $s$, oder dem auf dem Spline zurückgelegten Weg, können mit diesen beiden Splines auch zwischen den Stützstellen Punkte der Linien bestimmt werden.
 %TODO: das "somit" erschließt sich mir nicht - worauf bezieht sich das? Die Möglichkeit der Interpolation von Rundkursen ist m.M. nach noch keine logische Konsequenz daraus, zwei Splines zu haben - oder müsste noch genauer erklärt werden. (Frederic)
 %REVIEW
-Die Parametrisierung erlaubt es zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren, da diese Polynome jeweils eindeutig sind. Die Splines sind eine Schar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, zweifach stetig differenzierbar.
+Die Parametrisierung erlaubt es zum Beispiel geschlossene Rundkurse durch zwei solcher Splines zu interpolieren. Die Splines sind eine Schar von Polynomen (Gl.~\ref{eq:xs}~und~\ref{eq:ys}), dritten Grades im Fall von kubischen Splines, welche ihre Gültigkeit im Bereich zwischen den Stützstellen $i$ und $i+1$ haben. Die Splines sind überall, außer in der ersten und letzten Stützstelle, zweifach stetig differenzierbar.
 
 \begin{align}
 \begin{split} \label{eq:xs}
@@ -129,7 +129,6 @@ den aktuellen Lenkwinkel korrigieren. Dazu muss die Ausgabe des Reglers lediglic
 \subsubsection{PID-Regler}\label{sec:pid}
 
 Der PID-Regler in (Abb.~\ref{fig:PID-System}) erhält den aktuellen lateralen Fehler, zwischen longitudinaler Achse und der Referenztrajektorie, in einem bestimmten Abstand zum Fahrzeug als auszuregelnden Fehler.
-%TODO: da stimmt was nicht mit der Satzstellung - ist kein richtiger Satz :D (Frederic)
 %DONE Facepalm
 Der Regler besteht aus drei verschiedenen Elementen:
 
@@ -149,7 +148,6 @@ Der Regler besteht aus drei verschiedenen Elementen:
 \end{figure}
 
 Im Speziellen wurde der PID-Regler bezogen zur Standardmodellierung so angepasst, dass falls der Fehler am Sinken ist, der integrierende Anteil schneller abgebaut wird.  
-%TODO: schneller als was? was heißt "abgebaut"? (Frederic)
 Beim Standardmodell eines PID-Reglers steigt der I-Anteil weiterhin an, selbst wenn der Fehler bereits ausgeregelt wird. Der exakte Entwurf des implementierten PID-Reglers ist in Abbildung \ref{fig:PID} zu sehen. Für den Standardentwurf würde der Fehler \textit{err} aus Abbilung~\ref{fig:PID}, wie beim P und D-Glied in den Integrator und von dort in den Verstäker einfließen.  
 %TODO: kurze Beschreibung, was für eine Art von Entwurf / Skizze das ist (Frederic)
 
@@ -176,7 +174,6 @@ Aus diesem Zusammenhang lässt sich nun direkt mit Hilfe der Krümmung der Trajekt
 \delta = \arctan\left(\frac{L_{rear,front}}{\sqrt{\frac{1}{\kappa^2}-L_{rear,CoG}^2}}\right)
 \end{align}
 
-%TODO: auch hier wieder: Erklärung der Symbole in der Formel (Frederic)
 \begin{itemize}
 \item $L_{rear,front}$ entspricht dem Radstand des Fahrzeugs.
 \item $L_{rear,CoG}$ entspricht dem Abstand zwischen Hinterachse und dem Schwerpunkt (engl. center of gravity) des Fahrzeugs.
@@ -189,8 +186,10 @@ Im Fall von sehr großen Kurvenradien ($\frac{1}{\kappa}=R >> L_{rear,CoG}$) im V
 
 \subsection{Implementierung}\label{sec:ctrlImpl}
 
-Der PID-Regler wurde als Klasse \textit{Controller} implementiert und ist in der Lage verschiedene Inputs auszuregeln. Dabei ist es möglich nach dem genannten Konzept einen einzelnen Fehler an einem Punkt auf der Trajektorie oder Schaar von Fehlern zu übergeben. Zur Berechnung der Trajektorie wurde eine weitere Klasse, die auf die \textit{alglib} \cite{alglib} aufbaut implementiert. Diese benötigt lediglich zwei Vektoren mit den Punkten einer Linie als Input. Die Punkte werden daraufhin interpoliert und zwei kubische Splines (siehe. Gl.~\ref{eq:xs}~\&~\ref{eq:ys}) werden bestimmt. Es ist möglich verschiedene Operationen der \textit{alglib} auf den Spline-Objekten der Klasse anzuwenden oder aus einer oder zwei solcher Instanzen der Klasse, die eine Linie interpolieren eine Trajektorie zu bestimmen. Dazu kann man einen Offset in lateraler Richtung zur Linie addieren lassen oder zwei Linien gewichtet Vermischen. Die \textit{alglib} selbst bietet Funktionen an die Ableitungen eines Splines an einem Punkt zu bestimmen. Diese wurde im Vorlauf hinreichend an Beispielen getestet, um mit Hilfe der Ableitungen die Krümmung zu bestimmen. Dies war nötig, um die Machbarkeit des zweiten Regelentwurfs (siehe~\ref{sec:curv2lenk}) theoretisch nachzuweisen. Dazu wurden Kreise und festdefinierte stetige Kurven interpoliert und anschließend die bekannte Krümmung durch die Funktionen der \textit{alglib} überprüft. In der Praxis waren die Splines der \textit{alglib} jedoch nicht nutzbar, da es regelmäßig auf Geradenstücken in manchen Punkten zu extrem großen Krümmungen (kleinen Kurvenradien) gekommen ist. Deshalb wurde eine weitere Klasse \cite{poly} getestet, welche mit Hilfe eines Least-Squares-Verfahrens ein Polynom bestimmt, dass die Punkteschaar interpoliert. Die darauf bestimmten Ableitungen haben robustere Ergebnisse geliefert, jedoch kam es trotzdme noch zu größeren Regelabweichungen. Weshalb letztlich der PID-Regler zum Einsatz kam, welcher robustere Fahrergebnisse geliefert hat. \\
-Außerdem wurde noch eine Vehicle Klasse implementiert, der das Fahrzeugmodell zugrunde liegt. Diese ermöglicht es zum Beispiel aus dem berechneten Lenkwinkel der Trajektorie eine Lenkstellgröße zu bestimmen.
+Der PID-Regler wurde als Klasse \texttt{Controller} implementiert und ist in der Lage verschiedene Inputs auszuregeln. Dabei ist es möglich nach dem genannten Konzept einen einzelnen Fehler an einem Punkt auf der Trajektorie oder Schar von Fehlern zu übergeben.
 
-%TODO: was noch fehlt in dem Kapitel ist eine Aussage, welchen Ansatz wir letztendlich konkret verwendet haben (und evtl. warum) (Frederic)
-%TODO: ich würde auch noch, zumindest kurz, konkret auf die Implementierung eingehen (z.B. es wurde die Klasse dafür geschrieben und die Node dafür verwendet). Im Moment bleibt es noch sehr abstrakt und es wird mehr erklärt, mit welchen Formeln man welches Problem lösen KÖNNTE. (Frederic)
+Zur Berechnung der Trajektorie wurde eine weitere Klasse, die auf die \textit{alglib} \cite{alglib} aufbaut, implementiert. Diese benötigt lediglich zwei Vektoren mit den Punkten einer Linie als Input. Die Punkte werden daraufhin interpoliert und zwei kubische Splines (siehe. Gl.~\ref{eq:xs}~\&~\ref{eq:ys}) werden bestimmt. Es ist möglich, verschiedene Operationen der \textit{alglib} auf den Spline-Objekten der Klasse anzuwenden oder aus einer oder zwei solcher Instanzen der Klasse, die eine Linie interpolieren, eine Trajektorie zu bestimmen. Dazu kann ein Offset in lateraler Richtung zur Linie addiert werden oder zwei Linien gewichtet miteinander vermischt werden. Die \textit{alglib} selbst bietet Funktionen an, um die Ableitungen eines Splines an einem Punkt zu bestimmen. Diese wurde im Vorlauf hinreichend an Beispielen getestet, um mit Hilfe der Ableitungen die Krümmung zu bestimmen. Dies war nötig, um die Machbarkeit des zweiten Regelentwurfs (siehe~\ref{sec:curv2lenk}) theoretisch nachzuweisen. Dazu wurden Kreise und festdefinierte stetige Kurven interpoliert und anschließend die bekannte Krümmung durch die Funktionen der \textit{alglib} überprüft. In der Praxis waren die Splines der \textit{alglib} jedoch nicht nutzbar, da es regelmäßig auf Geradenstücken in manchen Punkten zu extrem großen Krümmungen (kleinen Kurvenradien) gekommen ist.
+
+Deshalb wurde eine weitere Klasse \cite{poly} getestet, welche mit Hilfe eines Least-Squares-Verfahrens ein Polynom bestimmt, dass die Punkteschaar interpoliert. Die darauf bestimmten Ableitungen haben robustere Ergebnisse geliefert, jedoch kam es trotzdem noch zu größeren Regelabweichungen. Aus diesem Grund kam letztlich der PID-Regler zum Einsatz, welcher robustere Fahrergebnisse liefern konnte.
+
+Des Weiteren wurde eine Klasse \texttt{Vehicle} implementiert, der das Fahrzeugmodell zugrunde liegt. Diese ermöglicht es zum Beispiel, aus dem berechneten Lenkwinkel der Trajektorie eine Lenkstellgröße zu bestimmen.
